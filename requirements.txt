@@ -1,0 +1,9 @@
+rdkit-pypi
+torch
+torch-geometric
+xgboost
+scikit-learn
+transformers
+numpy
+pandas
+pytest
