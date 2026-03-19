@@ -1,9 +1,9 @@
-rdkit-pypi
+rdkit-pypi==2022.9.5
 torch
 torch-geometric
 xgboost
 scikit-learn
 transformers
-numpy
+numpy==1.26.4
 pandas
 pytest
