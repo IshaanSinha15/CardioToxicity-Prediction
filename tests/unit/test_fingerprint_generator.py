@@ -1,6 +1,5 @@
 import numpy as np
 import pytest
-pytest.importorskip("rdkit")
 from molecular_processing.fingerprint_generator import generate_fingerprint
 
 
