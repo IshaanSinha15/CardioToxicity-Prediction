@@ -1,20 +1,17 @@
+import torch
 from rdkit import Chem
-from rdkit.Chem import AllChem
-from rdkit import DataStructs
-import numpy as np
+from torch_geometric.data import Data
 
 
-def generate_fingerprint(smiles: str, radius: int = 2, n_bits: int = 2048) -> np.ndarray:
+def build_graph(smiles: str) -> Data:
     """
-    Generate Morgan fingerprint from SMILES string.
+    Convert SMILES string into a graph for GNN models.
 
     Args:
-        smiles (str): SMILES representation of molecule
-        radius (int): Radius for Morgan fingerprint
-        n_bits (int): Length of fingerprint vector
+        smiles (str): SMILES representation
 
     Returns:
-        np.ndarray: Binary fingerprint vector
+        Data: PyTorch Geometric graph object
     """
 
     mol = Chem.MolFromSmiles(smiles)
@@ -22,13 +19,22 @@ def generate_fingerprint(smiles: str, radius: int = 2, n_bits: int = 2048) -> np
     if mol is None:
         raise ValueError(f"Invalid SMILES: {smiles}")
 
-    fp = AllChem.GetMorganFingerprintAsBitVect(
-        mol,
-        radius,
-        nBits=n_bits
-    )
+    # Node features (atomic number)
+    node_features = []
+    for atom in mol.GetAtoms():
+        node_features.append([atom.GetAtomicNum()])
 
-    arr = np.zeros((n_bits,), dtype=np.int8)
-    DataStructs.ConvertToNumpyArray(fp, arr)
+    x = torch.tensor(node_features, dtype=torch.float)
 
-    return arr
+    # Edge list
+    edge_list = []
+    for bond in mol.GetBonds():
+        i = bond.GetBeginAtomIdx()
+        j = bond.GetEndAtomIdx()
+
+        edge_list.append([i, j])
+        edge_list.append([j, i])  # bidirectional
+
+    edge_index = torch.tensor(edge_list, dtype=torch.long).t().contiguous()
+
+    return Data(x=x, edge_index=edge_index)
