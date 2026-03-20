@@ -1,0 +1,103 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# =========================
+# Virtual environments
+# =========================
+env/
+venv/
+.venv/
+cardio-ai/
+conda-env/
+*.env
+
+# =========================
+# Conda
+# =========================
+conda-meta/
+*.conda
+*.yaml
+
+# =========================
+# Pytest
+# =========================
+.pytest_cache/
+.coverage
+htmlcov/
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# VS Code / IDE
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# System files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Machine Learning artifacts
+# =========================
+models/saved_models/
+*.pt
+*.pth
+*.pkl
+*.joblib
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+
+# =========================
+# Dataset files
+# =========================
+data/datasets/*.csv
+data/datasets/*.tsv
+
+# =========================
+# HuggingFace cache
+# =========================
+.cache/
+huggingface/
+transformers_cache/
+
+# =========================
+# Temporary files
+# =========================
+tmp/
+temp/
+*.tmp
+
+# =========================
+# Build artifacts
+# =========================
+build/
+dist/
+*.egg-info/
+
+# =========================
+# Torch compiled
+# =========================
+*.ptc
+
+# =========================
+# RDKit
+# =========================
+*.sdf
+*.mol
+*.mol2

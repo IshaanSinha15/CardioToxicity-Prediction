@@ -1,40 +1,72 @@
-import torch
 from rdkit import Chem
+import torch
 from torch_geometric.data import Data
 
 
-def build_graph(smiles: str) -> Data:
-    """
-    Convert SMILES string into a graph for GNN models.
+def atom_features(atom):
 
-    Args:
-        smiles (str): SMILES representation
+    return [
+        atom.GetAtomicNum(),
+        atom.GetDegree(),
+        atom.GetFormalCharge(),
+        int(atom.GetHybridization()),
+        int(atom.GetIsAromatic()),
+        atom.GetTotalNumHs(),
+        atom.GetImplicitValence()
+    ]
 
-    Returns:
-        Data: PyTorch Geometric graph object
-    """
+
+def bond_features(bond):
+
+    return [
+        int(bond.GetBondTypeAsDouble()),
+        int(bond.GetIsAromatic()),
+        int(bond.GetIsConjugated())
+    ]
+
+
+def build_graph(smiles):
 
     mol = Chem.MolFromSmiles(smiles)
 
     if mol is None:
-        raise ValueError(f"Invalid SMILES: {smiles}")
+        raise ValueError("Invalid SMILES")
 
-    # Node features (atomic number)
-    node_features = []
-    for atom in mol.GetAtoms():
-        node_features.append([atom.GetAtomicNum()])
+    # ----- Node features -----
+    atoms = [atom_features(atom) for atom in mol.GetAtoms()]
+    x = torch.tensor(atoms, dtype=torch.float)
 
-    x = torch.tensor(node_features, dtype=torch.float)
+    # ----- Edge features -----
+    edges = []
+    edge_attrs = []
 
-    # Edge list
-    edge_list = []
     for bond in mol.GetBonds():
+
         i = bond.GetBeginAtomIdx()
         j = bond.GetEndAtomIdx()
 
-        edge_list.append([i, j])
-        edge_list.append([j, i])  # bidirectional
+        feat = bond_features(bond)
 
-    edge_index = torch.tensor(edge_list, dtype=torch.long).t().contiguous()
+        edges.append([i, j])
+        edges.append([j, i])
 
-    return Data(x=x, edge_index=edge_index)
+        edge_attrs.append(feat)
+        edge_attrs.append(feat)
+
+    if len(edges) == 0:
+
+        edge_index = torch.empty((2, 0), dtype=torch.long)
+        edge_attr = torch.empty((0, 3), dtype=torch.float)
+
+    else:
+
+        edge_index = torch.tensor(edges, dtype=torch.long).t().contiguous()
+        edge_attr = torch.tensor(edge_attrs, dtype=torch.float)
+
+    data = Data(
+        x=x,
+        edge_index=edge_index,
+        edge_attr=edge_attr
+    )
+
+    return data
