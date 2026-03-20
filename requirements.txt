@@ -1,5 +1,5 @@
 rdkit-pypi==2022.9.5
-torch
+torch>=2.2
 torch-geometric
 xgboost
 scikit-learn
