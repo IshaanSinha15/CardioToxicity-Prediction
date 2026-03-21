@@ -30,12 +30,12 @@ def build_graph(smiles):
     mol = Chem.MolFromSmiles(smiles)
 
     if mol is None:
-        return None
+        raise ValueError(f"Invalid SMILES: {smiles}")
 
     try:
         Chem.SanitizeMol(mol)
-    except:
-        return None
+    except Exception:
+        raise ValueError(f"Invalid molecule after sanitization: {smiles}")
 
     mol = Chem.AddHs(mol)
 
