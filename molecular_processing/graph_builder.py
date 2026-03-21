@@ -19,7 +19,7 @@ def atom_features(atom):
 def bond_features(bond):
 
     return [
-        int(bond.GetBondTypeAsDouble()),
+        float(bond.GetBondTypeAsDouble()),
         int(bond.GetIsAromatic()),
         int(bond.GetIsConjugated())
     ]
@@ -30,13 +30,22 @@ def build_graph(smiles):
     mol = Chem.MolFromSmiles(smiles)
 
     if mol is None:
-        raise ValueError("Invalid SMILES")
+        return None
 
-    # ----- Node features -----
+    try:
+        Chem.SanitizeMol(mol)
+    except:
+        return None
+
+    mol = Chem.AddHs(mol)
+
     atoms = [atom_features(atom) for atom in mol.GetAtoms()]
+
+    if len(atoms) == 0:
+        return None
+
     x = torch.tensor(atoms, dtype=torch.float)
 
-    # ----- Edge features -----
     edges = []
     edge_attrs = []
 
