@@ -48,14 +48,6 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
-# =========================
-# Machine Learning artifacts
-# =========================
-models/saved_models/
-*.pt
-*.pth
-*.pkl
-*.joblib
 
 # =========================
 # Logs
@@ -63,11 +55,6 @@ models/saved_models/
 logs/
 *.log
 
-# =========================
-# Dataset files
-# =========================
-data/datasets/*.csv
-data/datasets/*.tsv
 
 # =========================
 # HuggingFace cache
