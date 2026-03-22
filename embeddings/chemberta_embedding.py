@@ -3,24 +3,31 @@ import torch
 
 MODEL_NAME = "seyonec/ChemBERTa-zinc-base-v1"
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-model = AutoModel.from_pretrained(MODEL_NAME)
 
-model.eval()
+class ChemBERTaEncoder:
 
+    def __init__(self, device=None):
 
-def compute_embedding(smiles: str):
+        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
 
-    tokens = tokenizer(
-        smiles,
-        return_tensors="pt",
-        truncation=True,
-        padding=True
-    )
+        self.tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+        self.model = AutoModel.from_pretrained(MODEL_NAME).to(self.device)
 
-    with torch.no_grad():
+        self.model.eval()
 
-        outputs = model(**tokens)
-        embedding = outputs.last_hidden_state.mean(dim=1)
+    def encode(self, smiles_list):
 
-    return embedding.numpy()[0]
+        tokens = self.tokenizer(
+            smiles_list,
+            return_tensors="pt",
+            truncation=True,
+            padding=True
+        ).to(self.device)
+
+        with torch.no_grad():
+            outputs = self.model(**tokens)
+
+            # CLS token embedding
+            embeddings = outputs.last_hidden_state[:, 0, :]
+
+        return embeddings  # [batch_size, 768]
