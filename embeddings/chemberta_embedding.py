@@ -31,3 +31,26 @@ class ChemBERTaEncoder:
             embeddings = outputs.last_hidden_state[:, 0, :]
 
         return embeddings  # [batch_size, 768]
+
+
+# =========================
+# ✅ REQUIRED FOR TESTS (IMPORTANT)
+# =========================
+
+_encoder = None
+
+def compute_embedding(smiles: str):
+    """
+    Backward-compatible function for tests.
+    Returns embedding for a single SMILES.
+    """
+
+    global _encoder
+
+    if _encoder is None:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        _encoder = ChemBERTaEncoder(device=device)
+
+    emb = _encoder.encode([smiles])
+
+    return emb[0].cpu().numpy()
