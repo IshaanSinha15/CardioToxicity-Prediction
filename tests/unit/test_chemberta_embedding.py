@@ -1,21 +1,79 @@
-import numpy as np
-from embeddings.chemberta_embedding import compute_embedding
+import torch
+import pytest
+
+from embeddings.chemberta_embedding import ChemBERTaEncoder
 
 
-def test_embedding_generation():
+# -------------------------
+# Test 1: Basic functionality
+# -------------------------
+def test_compute_embeddings_shape():
 
-    smiles = "CCO"
+    encoder = ChemBERTaEncoder(device="cpu")
 
-    emb = compute_embedding(smiles)
+    smiles = ["CCO", "CCN"]
 
-    # embedding should not be None
-    assert emb is not None
+    embeddings = encoder.encode(smiles)
 
-    # embedding should be numpy array
-    assert isinstance(emb, np.ndarray)
+    assert isinstance(embeddings, torch.Tensor)
+    assert embeddings.shape[0] == 2
+    assert embeddings.shape[1] == 768
 
-    # embedding should be 1‑D vector
-    assert emb.ndim == 1
 
-    # embedding size should be greater than 0
-    assert emb.shape[0] > 0
+# -------------------------
+# Test 2: Single SMILES
+# -------------------------
+def test_single_smiles():
+
+    encoder = ChemBERTaEncoder(device="cpu")
+
+    smiles = ["CCO"]
+
+    embeddings = encoder.encode(smiles)
+
+    assert embeddings.shape == (1, 768)
+
+
+# -------------------------
+# Test 3: Consistency (same input → same output)
+# -------------------------
+def test_deterministic_output():
+
+    encoder = ChemBERTaEncoder(device="cpu")
+
+    smiles = ["CCO"]
+
+    emb1 = encoder.encode(smiles)
+    emb2 = encoder.encode(smiles)
+
+    assert torch.allclose(emb1, emb2, atol=1e-6)
+
+
+# -------------------------
+# Test 4: Invalid SMILES handling
+# -------------------------
+def test_invalid_smiles():
+
+    encoder = ChemBERTaEncoder(device="cpu")
+
+    smiles = ["INVALID"]
+
+    # Transformer should still return embedding (not crash)
+    embeddings = encoder.encode(smiles)
+
+    assert embeddings.shape == (1, 768)
+
+
+# -------------------------
+# Test 5: Batch size variation
+# -------------------------
+@pytest.mark.parametrize("batch_size", [1, 2, 4])
+def test_batch_sizes(batch_size):
+
+    encoder = ChemBERTaEncoder(device="cpu")
+
+    smiles = ["CCO"] * batch_size
+
+    embeddings = encoder.encode(smiles)
+
+    assert embeddings.shape == (batch_size, 768)
