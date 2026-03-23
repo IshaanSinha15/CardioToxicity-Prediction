@@ -88,3 +88,6 @@ dist/
 *.sdf
 *.mol
 *.mol2
+# Ignore generated data
+data/features/
+*.npy
