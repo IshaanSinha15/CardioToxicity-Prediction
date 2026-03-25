@@ -5,7 +5,7 @@ from tqdm import tqdm
 from embeddings.chemberta_embedding import ChemBERTaEncoder
 
 # Load dataset
-df = pd.read_csv("data/datasets/final_combined.csv")
+df = pd.read_csv("/final_combined.csv")
 
 encoder = ChemBERTaEncoder(device="cpu")  # CPU is fine
 
