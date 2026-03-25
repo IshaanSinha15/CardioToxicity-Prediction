@@ -37,7 +37,7 @@ class GNNModel(torch.nn.Module):
         self.fc2 = Linear(hidden_dim, hidden_dim // 2)
         self.fc3 = Linear(hidden_dim // 2, 1)
 
-    def forward(self, data):
+    def forward(self, data, return_embedding=False):
 
         x, edge_index, edge_attr, batch = (
             data.x,
@@ -48,22 +48,22 @@ class GNNModel(torch.nn.Module):
 
         x = self.input_proj(x)
 
-        # ----- Message Passing -----
-
         for conv, norm in zip(self.convs, self.norms):
 
             h = conv(x, edge_index, edge_attr)
             h = F.relu(h)
 
-            x = x + h        # residual
-            x = norm(x)      # layer norm
+            x = x + h
+            x = norm(x)
 
         # ----- Pooling -----
-
         x = global_mean_pool(x, batch)
 
-        # ----- MLP head -----
+        # return embedding for fusion
+        if return_embedding:
+            return x
 
+        # ----- MLP head -----
         x = self.dropout(x)
 
         x = F.relu(self.fc1(x))
