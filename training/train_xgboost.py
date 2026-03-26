@@ -50,7 +50,7 @@ def train():
     print(f"RMSE : {rmse:.4f}")
 
     # Save model
-    model.save_model(f"models/saved_models/xgb_{TASK}.json")
+    model.save_model(f"prediction_backend/models/saved_models/xgb_{TASK}.json")
     print(f"✅ Model saved: xgb_{TASK}.json")
 
 

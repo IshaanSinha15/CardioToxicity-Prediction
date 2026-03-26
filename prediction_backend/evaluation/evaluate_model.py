@@ -9,7 +9,7 @@ from rdkit.Chem.Scaffolds import MurckoScaffold
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from matplotlib.backends.backend_pdf import PdfPages
 
-from inference.predict import predict
+from prediction_backend.inference.predict import predict
 
 
 DATASET = "data/datasets/final_combined.csv"

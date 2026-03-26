@@ -11,8 +11,8 @@ import torch
 from torch_geometric.loader import DataLoader
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
-from molecular_processing.graph_builder import build_graph
-from models.gnn_model import GNNModel
+from prediction_backend.molecular_processing.graph_builder import build_graph
+from prediction_backend.models.gnn_model import GNNModel
 
 from deepchem.splits import ScaffoldSplitter
 from deepchem.data import NumpyDataset
@@ -25,9 +25,9 @@ DATASET_PATHS = {
 }
 
 MODEL_PATHS = {
-    "herg": "models/saved_models/gnn_herg.pt",
-    "nav": "models/saved_models/gnn_nav.pt",
-    "cav": "models/saved_models/gnn_cav.pt"
+    "herg": "prediction_backend/models/saved_models/gnn_herg.pt",
+    "nav": "prediction_backend/models/saved_models/gnn_nav.pt",
+    "cav": "prediction_backend/models/saved_models/gnn_cav.pt"
 }
 
 
@@ -294,7 +294,7 @@ def train(dataset_name):
                 best_loss = rmse
                 patience_counter = 0
 
-                os.makedirs("models/saved_models", exist_ok=True)
+                os.makedirs("prediction_backend/models/saved_models", exist_ok=True)
 
                 torch.save(model.state_dict(), MODEL_PATHS[dataset_name])
 
@@ -310,7 +310,7 @@ def train(dataset_name):
     # ---------- SAVE MODEL FOR NAV / CAV ----------
     if val_loader is None:
 
-        os.makedirs("models/saved_models", exist_ok=True)
+        os.makedirs("prediction_backend/models/saved_models", exist_ok=True)
 
         torch.save(model.state_dict(), MODEL_PATHS[dataset_name])
 

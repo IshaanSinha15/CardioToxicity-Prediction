@@ -2,8 +2,8 @@ import torch
 import numpy as np
 import pandas as pd
 
-from models.gnn_model import GNNModel
-from molecular_processing.graph_builder import build_graph
+from prediction_backend.models.gnn_model import GNNModel
+from prediction_backend.molecular_processing.graph_builder import build_graph
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -18,7 +18,7 @@ def generate(task, smiles_list):
 
     model.load_state_dict(
         torch.load(
-            f"models/saved_models/gnn_{task}.pt",
+            f"prediction_backend/models/saved_models/gnn_{task}.pt",
             map_location=DEVICE
         )
     )
@@ -52,7 +52,7 @@ def generate(task, smiles_list):
 
     outputs = np.vstack(outputs)
 
-    np.save(f"embeddings/gnn_embeddings_{task}.npy", outputs)
+    np.save(f"prediction_backend/embeddings/gnn_embeddings_{task}.npy", outputs)
 
     print(f" GNN embeddings saved for {task}: {outputs.shape}")
 

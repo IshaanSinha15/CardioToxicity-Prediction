@@ -34,6 +34,7 @@ jobs:
     - name: Run unit tests
       run: |
         export PYTHONPATH=.
-        pytest prediction_backend/tests/unit
+        pytest prediction_backend/tests/unit/ -v
+    
     - name: Upgrade pip
       run: pip install --upgrade pip

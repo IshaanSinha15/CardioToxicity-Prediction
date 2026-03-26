@@ -3,11 +3,11 @@ import numpy as np
 import joblib
 import xgboost as xgb
 
-from embeddings.chemberta_embedding import ChemBERTaEncoder
-from models.gnn_encoder import GNNEncoder
-from models.fusion_single_task import FusionSingleTask
-from molecular_processing.graph_builder import build_graph
-from features.rdkit_features import featurize_smiles
+from prediction_backend.embeddings.chemberta_embedding import ChemBERTaEncoder
+from prediction_backend.models.gnn_encoder import GNNEncoder
+from prediction_backend.models.fusion_single_task import FusionSingleTask
+from prediction_backend.molecular_processing.graph_builder import build_graph
+from prediction_backend.features.rdkit_features import featurize_smiles
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -38,7 +38,7 @@ for task in ["herg", "nav", "cav"]:
 
     fusion.load_state_dict(
         torch.load(
-            f"models/saved_models/fusion_{task}.pt",
+            f"prediction_backend/models/saved_models/fusion_{task}.pt",
             map_location=device
         )
     )
@@ -46,17 +46,17 @@ for task in ["herg", "nav", "cav"]:
     fusion.eval()
 
     gnn = GNNEncoder(
-        f"models/saved_models/gnn_{task}.pt",
+        f"prediction_backend/models/saved_models/gnn_{task}.pt",
         device=device
     )
 
     xgb_model = xgb.Booster()
     xgb_model.load_model(
-        f"models/saved_models/xgb_{task}.json"
+        f"prediction_backend/models/saved_models/xgb_{task}.json"
     )
 
     meta_model = joblib.load(
-        f"models/saved_models/meta_{task}.pkl"
+        f"prediction_backend/models/saved_models/meta_{task}.pkl"
     )
 
     models[task] = {
