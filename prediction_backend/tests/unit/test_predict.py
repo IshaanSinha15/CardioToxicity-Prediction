@@ -1,5 +1,5 @@
 import pandas as pd
-from inference.predict import predict
+from prediction_backend.inference.predict import predict
 
 DATASET = "data/datasets/final_combined.csv"
 

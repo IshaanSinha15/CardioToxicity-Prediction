@@ -16,8 +16,8 @@ def train():
     for task in TASKS:
 
         # load predictions
-        fusion = np.load(f"embeddings/fusion_{task}_pred.npy")
-        xgb = np.load(f"embeddings/xgb_{task}_pred.npy")
+        fusion = np.load(f"prediction_backend/embeddings/fusion_{task}_pred.npy")
+        xgb = np.load(f"prediction_backend/embeddings/xgb_{task}_pred.npy")
 
         # combine model predictions
         X = np.column_stack([fusion, xgb])
@@ -36,11 +36,11 @@ def train():
         model.fit(X, y)
 
         # save model
-        joblib.dump(model, f"models/saved_models/meta_{task}.pkl")
+        joblib.dump(model, f"prediction_backend/models/saved_models/meta_{task}.pkl")
 
         print(f"Final meta model trained for {task}")
         print(f"Samples used: {len(y)}")
-        print(f"Model saved: models/saved_models/meta_{task}.pkl\n")
+        print(f"Model saved: prediction_backend/models/saved_models/meta_{task}.pkl\n")
 
 
 if __name__ == "__main__":

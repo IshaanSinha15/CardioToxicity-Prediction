@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import xgboost as xgb
 
-from features.rdkit_features import featurize_smiles
+from prediction_backend.features.rdkit_features import featurize_smiles
 
 DATASET = "data/datasets/final_combined.csv"
 
@@ -42,13 +42,13 @@ def generate():
     for task in TASKS:
 
         model = xgb.Booster()
-        model.load_model(f"models/saved_models/xgb_{task}.json")
+        model.load_model(f"prediction_backend/models/saved_models/xgb_{task}.json")
 
         dmatrix = xgb.DMatrix(X)
 
         preds = model.predict(dmatrix)
 
-        np.save(f"embeddings/xgb_{task}_pred.npy", preds)
+        np.save(f"prediction_backend/embeddings/xgb_{task}_pred.npy", preds)
 
         print(f"XGBoost predictions saved for {task}: {preds.shape}")
 
