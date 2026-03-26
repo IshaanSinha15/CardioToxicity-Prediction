@@ -1,7 +1,7 @@
 import torch
 import pytest
 
-from prediction_backend.embeddings.chemberta_embedding import ChemBERTaEncoder
+from embeddings.chemberta_embedding import ChemBERTaEncoder
 
 
 # -------------------------

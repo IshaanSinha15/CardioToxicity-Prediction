@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import xgboost as xgb
 
-from prediction_backend.features.rdkit_features import featurize_smiles
+from features.rdkit_features import featurize_smiles
 
 DATASET = "data/datasets/final_combined.csv"
 

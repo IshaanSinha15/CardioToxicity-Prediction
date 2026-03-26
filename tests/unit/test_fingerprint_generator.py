@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from prediction_backend.molecular_processing.fingerprint_generator import generate_fingerprint
+from molecular_processing.fingerprint_generator import generate_fingerprint
 
 
 def test_fingerprint_size():

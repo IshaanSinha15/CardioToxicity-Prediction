@@ -1,4 +1,4 @@
-from prediction_backend.features.rdkit_features import generate_features
+from features.rdkit_features import generate_features
 
 # hERG
 generate_features(

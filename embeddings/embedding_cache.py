@@ -1,6 +1,6 @@
 import os
 import pickle
-from prediction_backend.embeddings.chemberta_embedding import compute_embedding
+from embeddings.chemberta_embedding import compute_embedding
 
 CACHE_PATH = "cache/chemberta_cache.pkl"
 

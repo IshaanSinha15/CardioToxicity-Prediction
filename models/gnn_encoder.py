@@ -1,5 +1,5 @@
 import torch
-from prediction_backend.models.gnn_model import GNNModel
+from models.gnn_model import GNNModel
 from torch_geometric.nn import global_mean_pool
 
 

@@ -1,7 +1,7 @@
 import numpy as np
 
-from prediction_backend.molecular_processing.fingerprint_generator import generate_fingerprint
-from prediction_backend.embeddings.embedding_cache import get_embedding
+from molecular_processing.fingerprint_generator import generate_fingerprint
+from embeddings.embedding_cache import get_embedding
 
 
 def build_features(smiles_list):

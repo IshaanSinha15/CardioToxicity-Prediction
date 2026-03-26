@@ -5,7 +5,7 @@ import pytest
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
 import pytest
-from prediction_backend.molecular_processing.smiles_parser import validate_smiles
+from molecular_processing.smiles_parser import validate_smiles
 
 
 def test_valid_smiles():
