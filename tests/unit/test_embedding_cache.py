@@ -1,4 +1,4 @@
-from prediction_backend.embeddings.embedding_cache import get_embedding
+from embeddings.embedding_cache import get_embedding
 
 def test_embedding_generation():
     emb = get_embedding("CCO")

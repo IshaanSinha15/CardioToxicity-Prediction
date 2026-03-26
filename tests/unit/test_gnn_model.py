@@ -1,7 +1,7 @@
 import torch
 
-from prediction_backend.models.gnn_model import GNNModel
-from prediction_backend.molecular_processing.graph_builder import build_graph
+from models.gnn_model import GNNModel
+from molecular_processing.graph_builder import build_graph
 
 
 def test_gnn_forward():

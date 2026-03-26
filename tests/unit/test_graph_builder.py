@@ -1,6 +1,6 @@
 import pytest
 from torch_geometric.data import Data
-from prediction_backend.molecular_processing.graph_builder import build_graph
+from molecular_processing.graph_builder import build_graph
 
 
 def test_graph_creation():
