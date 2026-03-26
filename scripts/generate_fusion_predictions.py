@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 
-from models.fusion_single_task import FusionSingleTask
+from prediction_backend.models.fusion_single_task import FusionSingleTask
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 

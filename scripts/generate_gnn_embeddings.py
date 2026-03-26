@@ -2,8 +2,8 @@ import torch
 import numpy as np
 import pandas as pd
 
-from models.gnn_model import GNNModel
-from molecular_processing.graph_builder import build_graph
+from prediction_backend.models.gnn_model import GNNModel
+from prediction_backend.molecular_processing.graph_builder import build_graph
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
