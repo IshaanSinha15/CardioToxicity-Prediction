@@ -11,9 +11,9 @@ from torch_geometric.loader import DataLoader as GeoLoader
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 
-from models.gnn_encoder import GNNEncoder
-from models.fusion_single_task import FusionSingleTask
-from molecular_processing.graph_builder import build_graph
+from prediction_backend.models.gnn_encoder import GNNEncoder
+from prediction_backend.models.fusion_single_task import FusionSingleTask
+from prediction_backend.molecular_processing.graph_builder import build_graph
 
 
 # 🔥 CHANGE PER RUN

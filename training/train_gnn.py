@@ -11,8 +11,8 @@ import torch
 from torch_geometric.loader import DataLoader
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
-from molecular_processing.graph_builder import build_graph
-from models.gnn_model import GNNModel
+from prediction_backend.molecular_processing.graph_builder import build_graph
+from prediction_backend.models.gnn_model import GNNModel
 
 from deepchem.splits import ScaffoldSplitter
 from deepchem.data import NumpyDataset
