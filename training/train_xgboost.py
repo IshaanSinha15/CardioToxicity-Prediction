@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, root_mean_squared_error
 
 
-# 🔥 CHANGE THIS EACH RUN
+# CHANGE THIS EACH RUN
 TASK = "cav"   # "nav" or "cav"
 
 
@@ -20,7 +20,7 @@ def train():
         X, y, test_size=0.2, random_state=42
     )
 
-    # 🔥 STRONGER MODEL (improved)
+    # STRONGER MODEL (improved)
     model = xgb.XGBRegressor(
         n_estimators=600,
         max_depth=8,
@@ -51,7 +51,7 @@ def train():
 
     # Save model
     model.save_model(f"prediction_backend/models/saved_models/xgb_{TASK}.json")
-    print(f"✅ Model saved: xgb_{TASK}.json")
+    print(f"Model saved: xgb_{TASK}.json")
 
 
 if __name__ == "__main__":

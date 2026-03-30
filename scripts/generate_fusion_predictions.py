@@ -11,7 +11,7 @@ TASKS = ["herg", "nav", "cav"]
 def generate(task):
 
     chemberta = np.load("data/chemberta_embeddings.npy")
-    gnn = np.load(f"prediction_backend/embeddings/gnn_embeddings_{task}.npy")
+    gnn = np.load(f"prediction_backend/embeddings/gnn_embeddings_{task}.npy", allow_pickle=True)
 
     chemberta = torch.tensor(chemberta, dtype=torch.float32).to(DEVICE)
     gnn = torch.tensor(gnn, dtype=torch.float32).to(DEVICE)

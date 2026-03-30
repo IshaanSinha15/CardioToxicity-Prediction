@@ -1,7 +1,7 @@
-import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 from rdkit import Chem
 from rdkit.Chem.Scaffolds import MurckoScaffold
@@ -12,13 +12,24 @@ from matplotlib.backends.backend_pdf import PdfPages
 from prediction_backend.inference.predict import predict
 
 
-DATASET = "data/datasets/final_combined.csv"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DATASET = REPO_ROOT / "data" / "datasets" / "final_combined.csv"
+TARGET_MEAN_PATH = REPO_ROOT / "data" / "target_mean.csv"
+TARGET_STD_PATH = REPO_ROOT / "data" / "target_std.csv"
 TASKS = ["herg", "nav", "cav"]
 
-BASE_DIR = "evaluation"
-PLOT_DIR = os.path.join(BASE_DIR, "plots")
+BASE_DIR = REPO_ROOT / "prediction_backend" / "evaluation"
+PLOT_DIR = BASE_DIR / "plots"
 
-os.makedirs(PLOT_DIR, exist_ok=True)
+PLOT_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def load_target_stats():
+
+    mean = pd.read_csv(TARGET_MEAN_PATH, index_col=0).iloc[:, 0].to_dict()
+    std = pd.read_csv(TARGET_STD_PATH, index_col=0).iloc[:, 0].to_dict()
+
+    return mean, std
 
 
 # -----------------------------
@@ -80,6 +91,7 @@ def run_evaluation():
 
     df = pd.read_csv(DATASET)
     df.columns = [c.lower() for c in df.columns]
+    target_mean, target_std = load_target_stats()
 
     train_df, test_df = scaffold_split(df)
 
@@ -106,8 +118,9 @@ def run_evaluation():
 
             if not np.isnan(row[task]):
 
-                y_true[task].append(row[task])
-                y_pred[task].append(preds[task])
+                actual_pic50 = row[task] * target_std[task] + target_mean[task]
+                y_true[task].append(actual_pic50)
+                y_pred[task].append(preds[task]["pIC50"])
 
         if i % 200 == 0:
             print(f"Processed {i}/{total}")
@@ -147,7 +160,7 @@ def run_evaluation():
         plt.ylabel("Predicted pIC50")
         plt.title(f"{task.upper()} Prediction")
 
-        path = f"{PLOT_DIR}/{task}_scatter.png"
+        path = PLOT_DIR / f"{task}_scatter.png"
         plt.savefig(path)
         plot_files.append(path)
         plt.close()
@@ -166,7 +179,7 @@ def run_evaluation():
         plt.ylabel("Residual (Predicted − Actual)")
         plt.title(f"{task.upper()} Residual Plot")
 
-        path = f"{PLOT_DIR}/{task}_residual.png"
+        path = PLOT_DIR / f"{task}_residual.png"
         plt.savefig(path)
         plot_files.append(path)
         plt.close()
@@ -187,7 +200,7 @@ def run_evaluation():
         plt.ylabel("|Residual|")
         plt.title(f"{task.upper()} Applicability Domain")
 
-        path = f"{PLOT_DIR}/{task}_applicability_domain.png"
+        path = PLOT_DIR / f"{task}_applicability_domain.png"
         plt.savefig(path)
         plot_files.append(path)
         plt.close()
@@ -219,7 +232,7 @@ def run_evaluation():
         plt.ylabel("Standardized Residuals")
         plt.title(f"{task.upper()} Williams Plot")
 
-        path = f"{PLOT_DIR}/{task}_williams.png"
+        path = PLOT_DIR / f"{task}_williams.png"
         plt.savefig(path)
         plot_files.append(path)
         plt.close()
@@ -227,13 +240,13 @@ def run_evaluation():
     # -----------------------------
     # Create PDF report
     # -----------------------------
-    pdf_path = os.path.join(BASE_DIR, "evaluation_report.pdf")
+    pdf_path = BASE_DIR / "evaluation_report.pdf"
 
     with PdfPages(pdf_path) as pdf:
 
         for plot in plot_files:
 
-            img = plt.imread(plot)
+            img = plt.imread(str(plot))
 
             fig = plt.figure(figsize=(8,6))
             plt.imshow(img)
@@ -242,8 +255,8 @@ def run_evaluation():
             pdf.savefig(fig)
             plt.close()
 
-    print("\nAll plots saved in: evaluation/plots/")
-    print("PDF report saved as: evaluation/evaluation_report.pdf\n")
+    print(f"\nAll plots saved in: {PLOT_DIR}")
+    print(f"PDF report saved as: {pdf_path}\n")
 
 
 if __name__ == "__main__":

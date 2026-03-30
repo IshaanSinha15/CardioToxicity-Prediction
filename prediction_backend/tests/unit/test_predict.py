@@ -1,10 +1,23 @@
 import pandas as pd
+from pathlib import Path
 from prediction_backend.inference.predict import predict
 
-DATASET = "data/datasets/final_combined.csv"
+REPO_ROOT = Path(__file__).resolve().parents[3]
+DATASET = REPO_ROOT / "data" / "datasets" / "final_combined.csv"
+TARGET_MEAN_PATH = REPO_ROOT / "data" / "target_mean.csv"
+TARGET_STD_PATH = REPO_ROOT / "data" / "target_std.csv"
+TASKS = ["herg", "nav", "cav"]
 
 
-def find_actual(smiles, df):
+def load_target_stats():
+
+    mean = pd.read_csv(TARGET_MEAN_PATH, index_col=0).iloc[:, 0].to_dict()
+    std = pd.read_csv(TARGET_STD_PATH, index_col=0).iloc[:, 0].to_dict()
+
+    return mean, std
+
+
+def find_actual(smiles, df, mean, std):
 
     row = df[df["smiles"] == smiles]
 
@@ -13,19 +26,34 @@ def find_actual(smiles, df):
 
     row = row.iloc[0]
 
-    return {
-        "herg": row["herg"],
-        "nav": row["nav"],
-        "cav": row["cav"]
-    }
+    actual = {}
+
+    for task in TASKS:
+
+        z_val = row[task]
+
+        if pd.isna(z_val):
+            actual[task] = float("nan")
+        else:
+            actual[task] = z_val * std[task] + mean[task]
+
+    return actual
 
 
 def run_test():
 
     print("\n===== Prediction Test =====\n")
 
+    if not DATASET.exists():
+        raise FileNotFoundError(f"Dataset not found: {DATASET}")
+    if not TARGET_MEAN_PATH.exists():
+        raise FileNotFoundError(f"Target mean file not found: {TARGET_MEAN_PATH}")
+    if not TARGET_STD_PATH.exists():
+        raise FileNotFoundError(f"Target std file not found: {TARGET_STD_PATH}")
+
     df = pd.read_csv(DATASET)
     df.columns = [c.lower() for c in df.columns]
+    target_mean, target_std = load_target_stats()
 
     while True:
 
@@ -40,7 +68,7 @@ def run_test():
             print("Prediction failed:", e)
             continue
 
-        actual = find_actual(smiles, df)
+        actual = find_actual(smiles, df, target_mean, target_std)
 
         print("\nPredicted Values\n")
 
@@ -54,7 +82,7 @@ def run_test():
 
             print("Actual Values\n")
 
-            for task in ["herg", "nav", "cav"]:
+            for task in TASKS:
 
                 val = actual[task]
 
@@ -64,13 +92,13 @@ def run_test():
                     print(f"{task.upper()} pIC50 : {val:.4f}")
 
         else:
-            print("\nActual values not found in dataset")
+            print("\n Compound not in dataset")
 
         if actual is not None:
 
             print("\nPrediction Error\n")
 
-            for task in ["herg", "nav", "cav"]:
+            for task in TASKS:
 
                 actual_val = actual[task]
 

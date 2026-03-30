@@ -1,15 +1,17 @@
-import os
 import pickle
+from pathlib import Path
 from prediction_backend.embeddings.chemberta_embedding import compute_embedding
 
-CACHE_PATH = "cache/chemberta_cache.pkl"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+CACHE_DIR = REPO_ROOT / "cache"
+CACHE_PATH = CACHE_DIR / "chemberta_cache.pkl"
 
 
 def load_cache():
 
-    if os.path.exists(CACHE_PATH):
+    if CACHE_PATH.exists():
 
-        with open(CACHE_PATH, "rb") as f:
+        with CACHE_PATH.open("rb") as f:
             return pickle.load(f)
 
     return {}
@@ -17,9 +19,9 @@ def load_cache():
 
 def save_cache(cache):
 
-    os.makedirs("cache", exist_ok=True)
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
-    with open(CACHE_PATH, "wb") as f:
+    with CACHE_PATH.open("wb") as f:
         pickle.dump(cache, f)
 
 
