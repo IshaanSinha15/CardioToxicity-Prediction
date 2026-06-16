@@ -7,7 +7,7 @@ from rdkit.Chem import Descriptors
 from rdkit.Chem import AllChem
 from rdkit import RDLogger
 
-# 🔥 Disable warnings
+#  Disable warnings
 RDLogger.DisableLog('rdApp.*')
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -65,4 +65,4 @@ def generate_features(csv_path, target_name, save_prefix):
     np.save(FEATURES_DIR / f"{save_prefix}_X.npy", X)
     np.save(FEATURES_DIR / f"{save_prefix}_y.npy", y)
 
-    print(f"✅ Saved {save_prefix}: {X.shape}")
+    print(f"Saved {save_prefix}: {X.shape}")
