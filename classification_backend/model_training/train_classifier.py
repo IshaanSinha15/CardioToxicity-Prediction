@@ -18,6 +18,7 @@ from sklearn.metrics import (
 import os
 import joblib
 
+<<<<<<< HEAD
 # ==========================================================
 # Load Data
 # ==========================================================
@@ -30,18 +31,25 @@ import joblib
 
 df = pd.read_csv("data/datasets/train_pool_20k.csv")
 df_holdout = pd.read_csv("data/datasets/holdout_unseen_drugs.csv")
+=======
+df = pd.read_csv("data/datasets/classifier_dataset.csv")
+>>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
 
 print(df.shape)
 print(df.head().to_string(index=False))
 print(df["Class"].value_counts().sort_index())
+<<<<<<< HEAD
 
 print("\nHoldout (unseen drugs) shape:", df_holdout.shape)
 print(df_holdout["Class"].value_counts().sort_index())
 
+=======
+>>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
 # ==========================================================
 # Data Preprocessing
 # ==========================================================
 
+<<<<<<< HEAD
 # Features (X) / Target (y) -- train pool
 X = df.drop(columns=["Medication", "Class"])
 y = df["Class"]
@@ -50,6 +58,13 @@ y = df["Class"]
 X_holdout = df_holdout.drop(columns=["Medication", "Class"])
 y_holdout = df_holdout["Class"]
 
+=======
+# Features (X)
+X = df.drop(columns=["Medication", "Class"])
+# Target (y)
+y = df["Class"]
+
+>>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
 print("\nFeature Matrix Shape:", X.shape)
 print("Target Shape:", y.shape)
 
@@ -61,6 +76,7 @@ print(sorted(y.unique()))
 
 
 # ==========================================================
+<<<<<<< HEAD
 # Train-Test Split (within train_pool_20k.csv only)
 # ==========================================================
 # NOTE: this split is for internal model selection / sanity-checking during
@@ -68,6 +84,10 @@ print(sorted(y.unique()))
 # split are drawn from the same "seen" drug pool, so rows on either side can
 # still be synthetic blends sharing a parent drug. The holdout set below is
 # what tells you how the model does on drugs it has never seen in any form.
+=======
+# Train-Test Split
+# ==========================================================
+>>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
 
 X_train, X_test, y_train, y_test = train_test_split(
     X,
@@ -77,7 +97,11 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 )
 
+<<<<<<< HEAD
 print("\nTrain-Test Split (within train_pool_20k.csv)")
+=======
+print("\nTrain-Test Split")
+>>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
 print("-" * 40)
 
 print("Training samples :", X_train.shape[0])
@@ -90,11 +114,14 @@ print("Testing feature shape :", X_test.shape)
 # ==========================================================
 # Random Forest Hyperparameter Tuning
 # ==========================================================
+<<<<<<< HEAD
 # IMPORTANT: GridSearchCV's internal cross-validation (cv=5) is performed
 # entirely on X_train/y_train, i.e. entirely within train_pool_20k.csv.
 # The unseen holdout set is NEVER passed into fit(), never scored during
 # tuning, and never used to pick hyperparameters. That's what keeps it a
 # genuine unseen-drug test at the end.
+=======
+>>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
 
 param_grid = {
     "n_estimators": [200, 500, 800],
@@ -119,7 +146,11 @@ rf_model = grid_search.best_estimator_
 print("\nBest Parameters:")
 print(grid_search.best_params_)
 
+<<<<<<< HEAD
 print("Best CV Score (train_pool_20k.csv only):")
+=======
+print("Best CV Score:")
+>>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
 print(grid_search.best_score_)
 
 print("\nRandom Forest Model:")
@@ -146,11 +177,16 @@ print("\nFeature Correlation Matrix")
 print(X.corr().round(2).to_string())
 
 # ==========================================================
+<<<<<<< HEAD
 # Prediction on the internal test split (train_pool_20k.csv)
+=======
+# Prediction
+>>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
 # ==========================================================
 
 y_pred = rf_model.predict(X_test)
 
+<<<<<<< HEAD
 print("Predictions generated successfully (internal test split)")
 
 # ==========================================================
@@ -163,18 +199,37 @@ print("Predictions generated successfully (internal test split)")
 accuracy = accuracy_score(y_test, y_pred)
 
 print("\nModel Evaluation -- Internal Test Split (train_pool_20k.csv)")
+=======
+print("Predictions generated successfully")
+
+# ==========================================================
+# Model Evaluation
+# ==========================================================
+
+accuracy = accuracy_score(y_test, y_pred)
+
+print("\nModel Evaluation")
+>>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
 print("-" * 40)
 
 print(f"Accuracy: {accuracy:.4f}")
 
+<<<<<<< HEAD
 print("\nClassification Report (internal test split):")
 print(classification_report(y_test, y_pred, zero_division=0))
 
 print("\nConfusion Matrix (internal test split):")
+=======
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred, zero_division=0))
+
+print("\nConfusion Matrix:")
+>>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
 print(confusion_matrix(y_test, y_pred))
 
 
 # ==========================================================
+<<<<<<< HEAD
 # FINAL Model Evaluation -- Unseen Drug Holdout
 # ==========================================================
 # This is the evaluation that actually matters for judging generalization.
@@ -219,6 +274,8 @@ print("not as a reason to generate more synthetic rows.")
 
 
 # ==========================================================
+=======
+>>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
 # Save Best Model
 # ==========================================================
 
@@ -231,6 +288,7 @@ print("Model: saved_models/random_forest_classifier.pkl")
 
 
 # ==========================================================
+<<<<<<< HEAD
 # Cross Validation (train_pool_20k.csv only)
 # ==========================================================
 # As with GridSearchCV above, this CV is run entirely on the seen-drug pool
@@ -240,6 +298,14 @@ print("Model: saved_models/random_forest_classifier.pkl")
 print("\n")
 print("=" * 60)
 print("Random Forest 5-Fold Cross Validation (train_pool_20k.csv)")
+=======
+# Cross Validation
+# ==========================================================
+
+print("\n")
+print("=" * 60)
+print("Random Forest 5-Fold Cross Validation")
+>>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
 print("=" * 60)
 
 cv = StratifiedKFold(
@@ -258,6 +324,7 @@ scores = cross_val_score(
 
 print("Fold Accuracies:", scores)
 print(f"Mean Accuracy : {scores.mean():.4f}")
+<<<<<<< HEAD
 print(f"Std Deviation : {scores.std():.4f}")
 
 print("\n")
@@ -267,3 +334,6 @@ print("=" * 60)
 print(f"Internal test split accuracy   : {accuracy:.4f}")
 print(f"5-fold CV mean accuracy        : {scores.mean():.4f} (+/- {scores.std():.4f})")
 print(f"Unseen-drug holdout accuracy   : {holdout_accuracy:.4f}  <-- most trustworthy number")
+=======
+print(f"Std Deviation : {scores.std():.4f}")
+>>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32

@@ -91,3 +91,7 @@ dist/
 # Ignore generated data
 data/features/
 *.npy
+
+
+# ORd virtual environment
+ord-env/
