@@ -222,9 +222,11 @@ print("not as a reason to generate more synthetic rows.")
 # Save Best Model
 # ==========================================================
 
-os.makedirs("saved_models", exist_ok=True)
+repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+models_dir = os.path.join(repo_root, "saved_models")
+os.makedirs(models_dir, exist_ok=True)
 
-joblib.dump(rf_model, "saved_models/random_forest_classifier.pkl")
+joblib.dump(rf_model, os.path.join(models_dir, "random_forest_classifier.pkl"))
 
 print("\nBest model saved successfully!")
 print("Model: saved_models/random_forest_classifier.pkl")
