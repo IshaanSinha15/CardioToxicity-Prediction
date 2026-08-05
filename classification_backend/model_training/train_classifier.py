@@ -29,11 +29,19 @@ import joblib
 #                      never used as a blend parent. Touched only once, at the
 #                      very end, as a genuine unseen-drug evaluation.
 
+<<<<<<< HEAD
 df = pd.read_csv("data/datasets/train_pool_20k.csv")
 df_holdout = pd.read_csv("data/datasets/holdout_unseen_drugs.csv")
 =======
 df = pd.read_csv("data/datasets/classifier_dataset.csv")
 >>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
+=======
+repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+datasets_dir = os.path.join(repo_root, "data", "datasets")
+
+df = pd.read_csv(os.path.join(datasets_dir, "train_pool_20k.csv"))
+df_holdout = pd.read_csv(os.path.join(datasets_dir, "holdout_unseen_drugs.csv"))
+>>>>>>> e514471565d9b8bfa12148669f500052b5c6f78c
 
 print(df.shape)
 print(df.head().to_string(index=False))
@@ -279,9 +287,11 @@ print("not as a reason to generate more synthetic rows.")
 # Save Best Model
 # ==========================================================
 
-os.makedirs("saved_models", exist_ok=True)
+repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+models_dir = os.path.join(repo_root, "saved_models")
+os.makedirs(models_dir, exist_ok=True)
 
-joblib.dump(rf_model, "saved_models/random_forest_classifier.pkl")
+joblib.dump(rf_model, os.path.join(models_dir, "random_forest_classifier.pkl"))
 
 print("\nBest model saved successfully!")
 print("Model: saved_models/random_forest_classifier.pkl")
