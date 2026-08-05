@@ -1,14 +1,8 @@
+import os
+import joblib
 import pandas as pd
 
-from sklearn.model_selection import (
-    train_test_split,
-    StratifiedKFold,
-    cross_val_score,
-    GridSearchCV,
-)
-
 from sklearn.ensemble import RandomForestClassifier
-
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -35,11 +29,11 @@ y = df["Class"]
 print("\nFeature Matrix Shape:", X.shape)
 print("Target Shape:", y.shape)
 
-print("\nFeature Columns:")
-print(X.columns.tolist())
+    print("\nFeature Columns:")
+    print(X.columns.tolist())
 
-print("\nTarget Classes:")
-print(sorted(y.unique()))
+    print("\nTarget Classes:")
+    print(sorted(y.unique()))
 
 
 # ==========================================================
@@ -76,17 +70,16 @@ param_grid = {
     "class_weight": ["balanced"]
 }
 
-grid_search = GridSearchCV(
-    estimator=RandomForestClassifier(random_state=42),
-    param_grid=param_grid,
-    cv=5,
-    scoring="accuracy",
-    n_jobs=-1
-)
+    grid_search = GridSearchCV(
+        estimator=RandomForestClassifier(random_state=42),
+        param_grid=param_grid,
+        cv=5,
+        scoring="accuracy",
+        n_jobs=-1,
+    )
+    grid_search.fit(X_train, y_train)
 
-grid_search.fit(X_train, y_train)
-
-rf_model = grid_search.best_estimator_
+    rf_model = grid_search.best_estimator_
 
 print("\nBest Parameters:")
 print(grid_search.best_params_)
@@ -94,28 +87,22 @@ print(grid_search.best_params_)
 print("Best CV Score:")
 print(grid_search.best_score_)
 
-print("\nRandom Forest Model:")
-print(rf_model)
+    print("\nRandom Forest Model:")
+    print(rf_model)
 
-# ==========================================================
-# Feature Importance
-# ==========================================================
+    # Feature importance
+    feature_importance = pd.DataFrame(
+        {
+            "Feature": X.columns,
+            "Importance": rf_model.feature_importances_,
+        }
+    ).sort_values(by="Importance", ascending=False)
 
-feature_importance = pd.DataFrame({
-    "Feature": X.columns,
-    "Importance": rf_model.feature_importances_
-})
+    print("\nFeature Importance")
+    print(feature_importance.to_string(index=False))
 
-feature_importance = feature_importance.sort_values(
-    by="Importance",
-    ascending=False
-)
-
-print("\nFeature Importance")
-print(feature_importance.to_string(index=False))
-
-print("\nFeature Correlation Matrix")
-print(X.corr().round(2).to_string())
+    print("\nFeature Correlation Matrix")
+    print(X.corr().round(2).to_string())
 
 # ==========================================================
 # Prediction
@@ -151,8 +138,8 @@ os.makedirs("saved_models", exist_ok=True)
 
 joblib.dump(rf_model, "saved_models/random_forest_classifier.pkl")
 
-print("\nBest model saved successfully!")
-print("Model: saved_models/random_forest_classifier.pkl")
+    print("\nBest model saved successfully!")
+    print("Model: saved_models/random_forest_classifier.pkl")
 
 
 # ==========================================================
@@ -164,19 +151,8 @@ print("=" * 60)
 print("Random Forest 5-Fold Cross Validation")
 print("=" * 60)
 
-cv = StratifiedKFold(
-    n_splits=5,
-    shuffle=True,
-    random_state=42
-)
-
-scores = cross_val_score(
-    rf_model,
-    X,
-    y,
-    cv=cv,
-    scoring="accuracy"
-)
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    scores = cross_val_score(rf_model, X, y, cv=cv, scoring="accuracy")
 
 print("Fold Accuracies:", scores)
 print(f"Mean Accuracy : {scores.mean():.4f}")
