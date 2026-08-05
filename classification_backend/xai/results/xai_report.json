@@ -1,0 +1,40 @@
+{
+    "prediction": 1,
+    "confidence": 1.0,
+    "probabilities": {
+        "Class_1": 1.0,
+        "Class_2": 0.0,
+        "Class_3": 0.0,
+        "Class_4": 0.0
+    },
+    "features": {
+        "RMP": -90.74,
+        "Peak": 31.99,
+        "APD50": 231.9,
+        "APD90": 278.4,
+        "Triangulation": 46.5,
+        "APA": 122.7,
+        "Block_IKr": 26.7,
+        "Block_INa": 2.6,
+        "Block_INaL": 0.0,
+        "Block_ICaL": 2.1,
+        "Block_IKs": 0.0,
+        "Block_IK1": 0.0,
+        "Block_Ito": 4.5
+    },
+    "shap_values": {
+        "RMP": 0.16861998070580334,
+        "Peak": 0.0019325524457070784,
+        "APD50": 0.15700074943508452,
+        "APD90": 0.13148485564596324,
+        "Triangulation": 0.05043280466329389,
+        "APA": 0.0006841776619937638,
+        "Block_IKr": 0.042572035048535406,
+        "Block_INa": -0.0020170100024072325,
+        "Block_INaL": 0.030827422801123605,
+        "Block_ICaL": 0.007346833804356003,
+        "Block_IKs": -0.03241384160038151,
+        "Block_IK1": -0.02593818231420072,
+        "Block_Ito": 0.21966887170512828
+    }
+}
