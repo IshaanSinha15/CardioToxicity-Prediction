@@ -8,7 +8,16 @@ class ClassifierModel:
         self.model = self._load_model()
 
     def _load_model(self) -> Any:
-        return joblib.load(self.model_path)
+        obj = joblib.load(self.model_path)
+
+        if isinstance(obj, dict):
+            self.feature_names = obj.get("feature_names")
+            self.classes = obj.get("classes")
+            self.n_features = obj.get("n_features")
+
+            return obj["model"]
+
+        return obj
 
     def predict(self, X):
         pred = self.model.predict(X)
