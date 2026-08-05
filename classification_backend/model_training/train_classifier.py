@@ -1,8 +1,14 @@
-import os
-import joblib
 import pandas as pd
 
+from sklearn.model_selection import (
+    train_test_split,
+    StratifiedKFold,
+    cross_val_score,
+    GridSearchCV,
+)
+
 from sklearn.ensemble import RandomForestClassifier
+
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -12,30 +18,7 @@ from sklearn.metrics import (
 import os
 import joblib
 
-<<<<<<< HEAD
-# ==========================================================
-# Load Data
-# ==========================================================
-# train_pool_20k.csv: 20,000 balanced rows (real "seen" drugs + synthetic
-#                      blends of only those seen drugs). All tuning/CV happens
-#                      here.
-# holdout_unseen_drugs.csv: real drugs held out BEFORE synthetic generation,
-#                      never used as a blend parent. Touched only once, at the
-#                      very end, as a genuine unseen-drug evaluation.
-
-<<<<<<< HEAD
-df = pd.read_csv("data/datasets/train_pool_20k.csv")
-df_holdout = pd.read_csv("data/datasets/holdout_unseen_drugs.csv")
-=======
-df = pd.read_csv("data/datasets/classifier_dataset.csv")
->>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
-=======
-repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-datasets_dir = os.path.join(repo_root, "data", "datasets")
-
-df = pd.read_csv(os.path.join(datasets_dir, "train_pool_20k.csv"))
-df_holdout = pd.read_csv(os.path.join(datasets_dir, "holdout_unseen_drugs.csv"))
->>>>>>> e514471565d9b8bfa12148669f500052b5c6f78c
+df = pd.read_csv("data/datasets/classification_train.csv")
 
 print(df.shape)
 print(df.head().to_string(index=False))
@@ -70,11 +53,11 @@ y = df["Class"]
 print("\nFeature Matrix Shape:", X.shape)
 print("Target Shape:", y.shape)
 
-    print("\nFeature Columns:")
-    print(X.columns.tolist())
+print("\nFeature Columns:")
+print(X.columns.tolist())
 
-    print("\nTarget Classes:")
-    print(sorted(y.unique()))
+print("\nTarget Classes:")
+print(sorted(y.unique()))
 
 
 # ==========================================================
@@ -133,16 +116,17 @@ param_grid = {
     "class_weight": ["balanced"]
 }
 
-    grid_search = GridSearchCV(
-        estimator=RandomForestClassifier(random_state=42),
-        param_grid=param_grid,
-        cv=5,
-        scoring="accuracy",
-        n_jobs=-1,
-    )
-    grid_search.fit(X_train, y_train)
+grid_search = GridSearchCV(
+    estimator=RandomForestClassifier(random_state=42),
+    param_grid=param_grid,
+    cv=5,
+    scoring="accuracy",
+    n_jobs=-1
+)
 
-    rf_model = grid_search.best_estimator_
+grid_search.fit(X_train, y_train)
+
+rf_model = grid_search.best_estimator_
 
 print("\nBest Parameters:")
 print(grid_search.best_params_)
@@ -154,22 +138,28 @@ print("Best CV Score:")
 >>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
 print(grid_search.best_score_)
 
-    print("\nRandom Forest Model:")
-    print(rf_model)
+print("\nRandom Forest Model:")
+print(rf_model)
 
-    # Feature importance
-    feature_importance = pd.DataFrame(
-        {
-            "Feature": X.columns,
-            "Importance": rf_model.feature_importances_,
-        }
-    ).sort_values(by="Importance", ascending=False)
+# ==========================================================
+# Feature Importance
+# ==========================================================
 
-    print("\nFeature Importance")
-    print(feature_importance.to_string(index=False))
+feature_importance = pd.DataFrame({
+    "Feature": X.columns,
+    "Importance": rf_model.feature_importances_
+})
 
-    print("\nFeature Correlation Matrix")
-    print(X.corr().round(2).to_string())
+feature_importance = feature_importance.sort_values(
+    by="Importance",
+    ascending=False
+)
+
+print("\nFeature Importance")
+print(feature_importance.to_string(index=False))
+
+print("\nFeature Correlation Matrix")
+print(X.corr().round(2).to_string())
 
 # ==========================================================
 <<<<<<< HEAD
@@ -280,8 +270,8 @@ os.makedirs(models_dir, exist_ok=True)
 
 joblib.dump(rf_model, os.path.join(models_dir, "random_forest_classifier.pkl"))
 
-    print("\nBest model saved successfully!")
-    print("Model: saved_models/random_forest_classifier.pkl")
+print("\nBest model saved successfully!")
+print("Model: saved_models/random_forest_classifier.pkl")
 
 
 # ==========================================================
@@ -305,8 +295,19 @@ print("Random Forest 5-Fold Cross Validation")
 >>>>>>> 07598fb96a9812e2bfd7e2272d6b85b958e08d32
 print("=" * 60)
 
-    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-    scores = cross_val_score(rf_model, X, y, cv=cv, scoring="accuracy")
+cv = StratifiedKFold(
+    n_splits=5,
+    shuffle=True,
+    random_state=42
+)
+
+scores = cross_val_score(
+    rf_model,
+    X,
+    y,
+    cv=cv,
+    scoring="accuracy"
+)
 
 print("Fold Accuracies:", scores)
 print(f"Mean Accuracy : {scores.mean():.4f}")
