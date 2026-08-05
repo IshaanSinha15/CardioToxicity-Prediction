@@ -6,11 +6,32 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 import pytest
+import pandas as pd
 
+from pipeline.classifier import ClassifierService
+from pipeline.feature_builder import FEATURE_ORDER
 from pipeline.prediction_pipeline import PredictionPipeline
 
 
 OUTPUT_DIR = os.path.join("outputs")
+
+
+def test_classifier_service_exposes_prediction_model():
+    classifier = ClassifierService("saved_models/random_forest_classifier.pkl")
+    predictor = classifier.get_prediction_model()
+    assert predictor is not None
+    assert hasattr(predictor, "predict")
+
+
+def test_shap_explainer_enforces_feature_order():
+    classifier = ClassifierService("saved_models/random_forest_classifier.pkl")
+    from classification_backend.xai.shap_explainer import ShapExplainer
+
+    df = pd.DataFrame([[0.0] * len(FEATURE_ORDER)], columns=FEATURE_ORDER[::-1])
+    explainer = ShapExplainer(classifier.get_prediction_model())
+    explanation = explainer.explain(df, feature_names=FEATURE_ORDER)
+
+    assert list(explanation.feature_names) == FEATURE_ORDER
 
 
 def ensure_output_dir():
@@ -50,6 +71,10 @@ def run_and_report(smiles: str, dose_nm: float, output_dir: str, try_full_simula
     assert "dose_response" in result
     assert "classification" in result
     assert "features_used" in result
+
+    # SHAP XAI should be attached to classification (or an error recorded)
+    clf = result["classification"]
+    assert ("shap_explanation" in clf) or ("shap_explanation_error" in clf)
 
     # Plot dose-response curve by sweeping doses using ChannelBlockGenerator
     try:
