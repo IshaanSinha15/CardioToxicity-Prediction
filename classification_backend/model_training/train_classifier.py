@@ -28,8 +28,11 @@ import joblib
 #                      never used as a blend parent. Touched only once, at the
 #                      very end, as a genuine unseen-drug evaluation.
 
-df = pd.read_csv("data/datasets/train_pool_20k.csv")
-df_holdout = pd.read_csv("data/datasets/holdout_unseen_drugs.csv")
+repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+datasets_dir = os.path.join(repo_root, "data", "datasets")
+
+df = pd.read_csv(os.path.join(datasets_dir, "train_pool_20k.csv"))
+df_holdout = pd.read_csv(os.path.join(datasets_dir, "holdout_unseen_drugs.csv"))
 
 print(df.shape)
 print(df.head().to_string(index=False))
