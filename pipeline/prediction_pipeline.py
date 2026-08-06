@@ -10,6 +10,8 @@ from typing import Optional
 from .feature_builder import build_features_from_simulation
 from .classifier import ClassifierService
 from classification_backend.dose_response.hill_equation import HillEquation
+from classification_backend.xai.run_xai import XAIPipeline
+
 
 FEATURE_ORDER = [
     "RMP",
