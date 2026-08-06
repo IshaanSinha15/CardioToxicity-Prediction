@@ -9,6 +9,37 @@ from typing import Optional
 from .feature_builder import build_features_from_simulation, features_to_dataframe
 from .classifier import ClassifierService
 from classification_backend.dose_response.hill_equation import HillEquation
+FEATURE_NAMES = [
+    "RMP",
+    "Peak",
+    "APD50",
+    "APD90",
+    "Triangulation",
+    "APA",
+    "Block_IKr",
+    "Block_INa",
+    "Block_INaL",
+    "Block_ICaL",
+    "Block_IKs",
+    "Block_IK1",
+    "Block_Ito",
+]
+
+FEATURE_UNITS = {
+    "RMP": "mV",
+    "Peak": "mV",
+    "APD50": "ms",
+    "APD90": "ms",
+    "Triangulation": "ms",
+    "APA": "mV",
+    "Block_IKr": "%",
+    "Block_INa": "%",
+    "Block_INaL": "%",
+    "Block_ICaL": "%",
+    "Block_IKs": "%",
+    "Block_IK1": "%",
+    "Block_Ito": "%",
+}
 
 
 class PredictionPipeline:
@@ -177,10 +208,40 @@ class PredictionPipeline:
             raise PipelineError(f"Classification failed: {exc}")
 
         # Build final output
+        # -------------------------------------------------
+        # Build XAI input
+        # -------------------------------------------------
+
+        feature_order = list(features_df.columns)
+
+        feature_values = [
+            float(features[name])
+            for name in feature_order
+        ]
+
+        xai_input = {
+            "model_type": "RandomForestClassifier",
+            "feature_names": feature_order,
+            "feature_values": feature_values,
+            "feature_dataframe": features_df.to_dict(orient="records")[0],
+        }
+
+        # -------------------------------------------------
+        # Final Result
+        # -------------------------------------------------
+
         result: PipelineResult = {
-            "input": {"smiles": smiles, "dose_nm": dose_nm, "drug_name": validated.get("drug_name")},
+
+            "input": {
+                "smiles": smiles,
+                "dose_nm": dose_nm,
+                "drug_name": validated.get("drug_name"),
+            },
+
             "ic50_prediction": ic50_preds,
+
             "dose_response": dose_payload,
+
             "simulation": {
                 "RMP": features["RMP"],
                 "Peak": features["Peak"],
@@ -189,8 +250,14 @@ class PredictionPipeline:
                 "Triangulation": features["Triangulation"],
                 "APA": features["APA"],
             },
+
             "classification": classification,
+
             "features_used": features,
+
+            "delta_features": delta_features,
+
+            "xai_input": xai_input,
         }
 
         return result
