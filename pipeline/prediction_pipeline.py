@@ -205,6 +205,7 @@ class PredictionPipeline:
         try:
             classification = self.classifier.predict(features_df)
             xai_result = self.xai.explain(feature_values)
+
             # Add advisory when blocks are very small
             max_block = max(herg_block, nav_block, cav_block)
             if max_block < 5.0:
@@ -261,6 +262,8 @@ class PredictionPipeline:
             "delta_features": delta_features,
 
             "xai_input": xai_input,
+
+            "xai": xai_result,
         }
 
         return result
