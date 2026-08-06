@@ -12,7 +12,6 @@ from .classifier import ClassifierService
 from classification_backend.dose_response.hill_equation import HillEquation
 from classification_backend.xai.run_xai import XAIPipeline
 
-
 FEATURE_ORDER = [
     "RMP",
     "Peak",
@@ -38,7 +37,8 @@ FEATURE_ORDER = [
 class PredictionPipeline:
     def __init__(self, classifier_model_path: str = "saved_models/random_forest_classifier.pkl") -> None:
         self.classifier = ClassifierService(classifier_model_path)
-
+        self.xai = XAIPipeline()
+        
     def _validate_input(self, payload: PipelineInput) -> PipelineInput:
         if "smiles" not in payload or not payload["smiles"]:
             raise PipelineError("Missing SMILES string")
