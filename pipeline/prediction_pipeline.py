@@ -73,28 +73,57 @@ class PredictionPipeline:
         except Exception as exc:
             raise PipelineError(f"Dose-response calculation failed: {exc}")
 
-        # Step 3: ORd Simulation (run control and drug simulations)
+        # -------------------------------------------------
+        # Step 3: ORd Simulation (or Skip Simulation)
+        # -------------------------------------------------
+
         time = None
         voltage = None
         control_time = None
         control_voltage = None
-        try:
-            # Import simulator lazily so missing optional deps don't break package import
-            from classification_backend.simulation.ord_simulator import ORDSimulator
-            # Run control (no block)
-            ctrl_sim = ORDSimulator()
-            ctrl_result = ctrl_sim.run()
-            control_time = ctrl_result["environment.time"]
-            control_voltage = ctrl_result["membrane.v"]
 
-            # Run drug simulation on a fresh simulator instance
-            drug_sim = ORDSimulator()
-            # Map blocks: herg -> IKr, nav -> INa, cav -> ICaL
-            herg_block = float(dose_payload.get("herg_block", 0.0))
-            nav_block = float(dose_payload.get("nav_block", 0.0))
-            cav_block = float(dose_payload.get("cav_block", 0.0))
+        herg_block = float(dose_payload.get("herg_block", 0.0))
+        nav_block = float(dose_payload.get("nav_block", 0.0))
+        cav_block = float(dose_payload.get("cav_block", 0.0))
 
-            drug_sim.apply_channel_blocks(
+        skip_sim = payload.get("skip_simulation", False)
+
+        if skip_sim:
+            warnings.warn("Skipping ORd simulation. Using synthetic waveform.")
+
+            import numpy as np
+
+            control_time = np.linspace(0, 1000, 10001)
+            control_voltage = -90 + 100 * np.exp(-((control_time - 50) / 5) ** 2)
+
+            herg_hill = HillEquation(ic50_nm=float(ic50_preds["herg"]["IC50_nM"]))      
+            nav_hill = HillEquation(ic50_nm=float(ic50_preds["nav"]["IC50_nM"]))
+            cav_hill = HillEquation(ic50_nm=float(ic50_preds["cav"]["IC50_nM"]))
+
+            herg_scale = herg_hill.conductance_scaling(dose_nm)
+            nav_scale = nav_hill.conductance_scaling(dose_nm)
+            cav_scale = cav_hill.conductance_scaling(dose_nm)
+
+            avg_scale = (herg_scale + nav_scale + cav_scale) / 3.0
+
+            time = control_time
+            voltage = control_voltage * avg_scale
+
+        else:
+            try:
+                from classification_backend.simulation.ord_simulator import ORDSimulator
+
+                # Control simulation
+                ctrl_sim = ORDSimulator()
+                ctrl_result = ctrl_sim.run()
+
+                control_time = ctrl_result["environment.time"]
+                control_voltage = ctrl_result["membrane.v"]
+
+                # Drug simulation
+                drug_sim = ORDSimulator()
+
+                drug_sim.apply_channel_blocks(
                 ikr=herg_block,
                 ina=nav_block,
                 inal=0.0,
@@ -102,38 +131,15 @@ class PredictionPipeline:
                 iks=0.0,
                 ik1=0.0,
                 ito=0.0,
-            )
-            sim_result = drug_sim.run()
-            time = sim_result["environment.time"]
-            voltage = sim_result["membrane.v"]
+                )
 
-        except ImportError as exc:
-            # Optional dependency missing (myokit). Provide helpful message and
-            # allow tests to run if caller set skip_simulation flag.
-            if payload.get("skip_simulation"):
-                warnings.warn("myokit not installed — using synthetic AP waveform for testing")
-                import numpy as _np
+                sim_result = drug_sim.run()
 
-                control_time = _np.linspace(0, 1000, 10001)
-                control_voltage = -90 + 100 * _np.exp(-((control_time - 50) / 5) ** 2)
+                time = sim_result["environment.time"]
+                voltage = sim_result["membrane.v"]
 
-                # Create drug waveform by scaling amplitude using HillEquation conductance scaling
-                herg_hill = HillEquation(ic50_nm=float(ic50_preds["herg"]["IC50_nM"]))
-                nav_hill = HillEquation(ic50_nm=float(ic50_preds["nav"]["IC50_nM"]))
-                cav_hill = HillEquation(ic50_nm=float(ic50_preds["cav"]["IC50_nM"]))
-
-                herg_scale = herg_hill.conductance_scaling(dose_nm)
-                nav_scale = nav_hill.conductance_scaling(dose_nm)
-                cav_scale = cav_hill.conductance_scaling(dose_nm)
-
-                avg_scale = float((herg_scale + nav_scale + cav_scale) / 3.0)
-
-                time = control_time
-                voltage = control_voltage * avg_scale
-            else:
-                raise PipelineError("ORd simulator dependency missing: myokit. Install myokit or run with skip_simulation=True")
-        except Exception as exc:
-            raise PipelineError(f"ORd simulation failed: {exc}")
+            except Exception as exc:
+                raise PipelineError(f"ORd simulation failed: {exc}")
 
         # Ensure block variables exist (set from dose_payload)
         herg_block = float(dose_payload.get("herg_block", 0.0))
@@ -263,7 +269,8 @@ class PredictionPipeline:
 
             "xai_input": xai_input,
 
-            "xai": xai_result,
+            "xai_output": xai_result
+            
         }
 
         return result

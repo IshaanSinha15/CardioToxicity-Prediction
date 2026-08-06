@@ -32,6 +32,9 @@ FEATURE_NAMES = [
     "Block_IKs",
     "Block_IK1",
     "Block_Ito",
+    "IC50_IKr",
+    "IC50_INa",
+    "IC50_ICaL",
 ]
 
 
@@ -84,13 +87,22 @@ class XAIPipeline:
             shap_values=class_explanation.values,
         )
 
+        print(type(prediction["prediction"]))
+        print(type(prediction["confidence"]))
+        print(type(prediction["probabilities"]))
+        print(type(class_explanation.values))
+
         return {
 
-            "prediction": prediction["prediction"],
+            "prediction": int(prediction["prediction"]),
 
-            "confidence": prediction["confidence"],
+            "confidence": float(prediction["confidence"]),
 
-            "probabilities": prediction["probabilities"],
+            "probabilities": (
+                prediction["probabilities"].tolist()
+                if hasattr(prediction["probabilities"], "tolist")
+                else prediction["probabilities"]
+            ),
 
             "bar_plot": str(bar_plot),
 
@@ -98,8 +110,11 @@ class XAIPipeline:
 
             "report": str(report_path),
 
-            "shap_values": class_explanation.values,
-
+            "shap_values": (
+                class_explanation.values.tolist()
+                if hasattr(class_explanation.values, "tolist")
+                else class_explanation.values
+            ),
         }
 
 

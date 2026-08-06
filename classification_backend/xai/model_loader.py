@@ -26,9 +26,14 @@ class ModelLoader:
                 f"Model not found:\n{self.model_path}"
             )
 
-        model = joblib.load(self.model_path)
+        bundle = joblib.load(self.model_path)
 
         print("\nModel loaded successfully.")
         print(f"Path: {self.model_path}")
 
-        return model
+    # If the pickle is a bundle, extract the classifier
+        if isinstance(bundle, dict):
+            print("Bundle keys:", bundle.keys())
+            return bundle["model"]
+
+        return bundle
