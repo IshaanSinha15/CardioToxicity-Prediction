@@ -1,15 +1,17 @@
 from typing import Dict, Any
 
 from .utils import PipelineInput, PipelineResult, PipelineError
+import pandas as pd
 
 from prediction_backend.inference.predict import predict as predict_ic50
 from classification_backend.dose_response.channel_block_generator import ChannelBlockGenerator, ChannelIC50Inputs
 import warnings
 from typing import Optional
-from .feature_builder import build_features_from_simulation, features_to_dataframe
+from .feature_builder import build_features_from_simulation
 from .classifier import ClassifierService
 from classification_backend.dose_response.hill_equation import HillEquation
-FEATURE_NAMES = [
+
+FEATURE_ORDER = [
     "RMP",
     "Peak",
     "APD50",
@@ -23,23 +25,12 @@ FEATURE_NAMES = [
     "Block_IKs",
     "Block_IK1",
     "Block_Ito",
+    "IC50_IKr",
+    "IC50_INa",
+    "IC50_ICaL",
 ]
 
-FEATURE_UNITS = {
-    "RMP": "mV",
-    "Peak": "mV",
-    "APD50": "ms",
-    "APD90": "ms",
-    "Triangulation": "ms",
-    "APA": "mV",
-    "Block_IKr": "%",
-    "Block_INa": "%",
-    "Block_INaL": "%",
-    "Block_ICaL": "%",
-    "Block_IKs": "%",
-    "Block_IK1": "%",
-    "Block_Ito": "%",
-}
+
 
 
 class PredictionPipeline:
@@ -180,6 +171,7 @@ class PredictionPipeline:
                 "APD90": float(features_drug["APD90"]),
                 "Triangulation": float(features_drug["Triangulation"]),
                 "APA": float(features_drug["APA"]),
+
                 "Block_IKr": float(block_mapping.get("IKr", 0.0)),
                 "Block_INa": float(block_mapping.get("INa", 0.0)),
                 "Block_INaL": float(block_mapping.get("INaL", 0.0)),
@@ -187,10 +179,15 @@ class PredictionPipeline:
                 "Block_IKs": float(block_mapping.get("IKs", 0.0)),
                 "Block_IK1": float(block_mapping.get("IK1", 0.0)),
                 "Block_Ito": float(block_mapping.get("Ito", 0.0)),
+
+                # NEW
+                "IC50_IKr": float(ic50_preds["herg"]["IC50_nM"]),
+                "IC50_INa": float(ic50_preds["nav"]["IC50_nM"]),
+                "IC50_ICaL": float(ic50_preds["cav"]["IC50_nM"]),
             }
 
             # attach delta features under a nested key for reporting
-            features_df = features_to_dataframe(features)
+            features_df = pd.DataFrame([[features[c] for c in FEATURE_ORDER]], columns=FEATURE_ORDER)
         except Exception as exc:
             raise PipelineError(f"Feature construction failed: {exc}")
 
