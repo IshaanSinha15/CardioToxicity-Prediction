@@ -1,3 +1,4 @@
+from pyexpat import features
 from typing import Dict, Any
 
 from .utils import PipelineInput, PipelineResult, PipelineError
@@ -193,9 +194,17 @@ class PredictionPipeline:
         except Exception as exc:
             raise PipelineError(f"Feature construction failed: {exc}")
 
+        feature_order = list(features_df.columns)
+        
+        feature_values = [
+                float(features[name])
+                for name in feature_order
+                ]
+
         # Step 5: Classification
         try:
             classification = self.classifier.predict(features_df)
+            xai_result = self.xai.explain(feature_values)
             # Add advisory when blocks are very small
             max_block = max(herg_block, nav_block, cav_block)
             if max_block < 5.0:
@@ -211,12 +220,7 @@ class PredictionPipeline:
         # Build XAI input
         # -------------------------------------------------
 
-        feature_order = list(features_df.columns)
-
-        feature_values = [
-            float(features[name])
-            for name in feature_order
-        ]
+      
 
         xai_input = {
             "model_type": "RandomForestClassifier",
