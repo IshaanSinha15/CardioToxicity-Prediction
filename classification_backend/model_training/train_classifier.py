@@ -13,12 +13,59 @@ from sklearn.ensemble import RandomForestClassifier
 
 from sklearn.metrics import (
     accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
     classification_report,
     confusion_matrix,
 )
 
-import os
-import joblib
+from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
+
+from sklearn.utils import resample
+
+
+# ==========================================================
+# Paths
+# ==========================================================
+
+ROOT_DIR = os.path.dirname(
+    os.path.dirname(
+        os.path.dirname(__file__)
+    )
+)
+
+INPUT_CSV = os.path.join(
+    ROOT_DIR,
+    "classification_backend",
+    "dataset",
+    "classifier_dataset_labeled.csv",
+)
+
+MODEL_DIR = os.path.join(
+    ROOT_DIR,
+    "classification_backend",
+    "saved_models",
+)
+
+OUTPUT_DIR = os.path.join(
+    ROOT_DIR,
+    "classification_backend",
+    "outputs",
+)
+
+os.makedirs(MODEL_DIR, exist_ok=True)
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+
+# ==========================================================
+# Load Dataset
+# ==========================================================
+
+print("=" * 60)
+print("Loading Classifier Dataset")
+print("=" * 60)
 
 # ==========================================================
 # Load Data
@@ -41,7 +88,7 @@ print("\nHoldout (unseen drugs) shape:", df_holdout.shape)
 print(df_holdout["Class"].value_counts().sort_index())
 
 # ==========================================================
-# Data Preprocessing
+# Encode Labels
 # ==========================================================
 # APA is dropped: it's an exact identity (Peak - RMP), not an independent
 # measurement. Keeping it adds zero real signal and only gives the model
@@ -119,7 +166,7 @@ print("Distinct families in train:", groups_train.nunique())
 print("Distinct families in test :", groups.iloc[test_idx].nunique())
 
 # ==========================================================
-# Random Forest Hyperparameter Tuning
+# Balanced Training Set
 # ==========================================================
 # Two changes from before:
 #   1. GroupKFold (grouped by parent-drug family) instead of plain
@@ -155,8 +202,8 @@ grid_search.fit(X_train, y_train, groups=groups_train)
 
 rf_model = grid_search.best_estimator_
 
-print("\nBest Parameters:")
-print(grid_search.best_params_)
+    print("\nBest Parameters")
+    print(search.best_params_)
 
 print("Best CV Score (grouped, train_pool_20k_final.csv only):")
 print(grid_search.best_score_)
@@ -233,7 +280,7 @@ print("fix at that point is more real labeled drugs (e.g. running the 28")
 print("CiPA drugs through your real ORDSimulator), not more synthetic rows.")
 
 # ==========================================================
-# Save Best Model
+# Model Comparison
 # ==========================================================
 
 model_bundle = {
