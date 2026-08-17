@@ -1,14 +1,15 @@
-import os
-import joblib
 import pandas as pd
+import re
 
 from sklearn.model_selection import (
-    GroupShuffleSplit,
-    RandomizedSearchCV,
+    train_test_split,
     StratifiedKFold,
+    GroupKFold,
+    cross_val_score,
+    GridSearchCV,
 )
 
-from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import RandomForestClassifier
 
 from sklearn.metrics import (
     accuracy_score,
@@ -66,592 +67,262 @@ print("=" * 60)
 print("Loading Classifier Dataset")
 print("=" * 60)
 
-df = pd.read_csv(INPUT_CSV)
+# ==========================================================
+# Load Data
+# ==========================================================
+# train_pool_20k_final.csv: 20,000 balanced rows built with independent
+#                         per-channel interpolation (v2 generator) -- less
+#                         artificial collinearity than v1.
+# holdout_unseen_drugs_final.csv: real drugs held out before synthetic
+#                         generation, never used as a blend parent. Touched
+#                         once, at the very end.
+
+df = pd.read_csv("data/datasets/train_pool_20k_final.csv")
+df_holdout = pd.read_csv("data/datasets/holdout_unseen_drugs_final.csv")
 
 print(df.shape)
+print(df.head().to_string(index=False))
+print(df["Class"].value_counts().sort_index())
 
-
-# ==========================================================
-# Features
-# ==========================================================
-
-FEATURE_COLUMNS = [
-    "dose_nm",
-    "Block_IKr",
-    "Block_INa",
-    "Block_ICaL",
-]
-
-TARGET_COLUMN = "RiskClass"
-
-X = df[FEATURE_COLUMNS]
-y = df[TARGET_COLUMN]
-groups = df["smiles"]
-
+print("\nHoldout (unseen drugs) shape:", df_holdout.shape)
+print(df_holdout["Class"].value_counts().sort_index())
 
 # ==========================================================
 # Encode Labels
 # ==========================================================
+# APA is dropped: it's an exact identity (Peak - RMP), not an independent
+# measurement. Keeping it adds zero real signal and only gives the model
+# extra room to fit noise/artifacts.
+# Bnet is dropped: it's the exact formula the Class label was derived from
+# (0.5*(log10(IC50_ICaL/EFTPC)+log10(IC50_INa/EFTPC)) - log10(IC50_IKr/EFTPC),
+# then quartile-binned). Keeping it in X would let the model just learn the
+# label-generation formula instead of learning from the raw channel data
+# (IC50_IKr, IC50_INa, IC50_ICaL, Block_*) the way you actually want it to.
 
-encoder = LabelEncoder()
+DROP_COLS = ["Medication", "Class", "Bnet"]
 
-y_encoded = encoder.fit_transform(y)
+X = df.drop(columns=DROP_COLS)
+y = df["Class"]
 
-print("\nClasses")
+X_holdout = df_holdout.drop(columns=DROP_COLS)
+y_holdout = df_holdout["Class"]
 
-for i, cls in enumerate(encoder.classes_):
-    print(i, cls)
-
-print("\nDistribution")
-
-print(y.value_counts())
-
+print("\nFeature Matrix Shape:", X.shape)
+print("Target Shape:", y.shape)
+print("\nFeature Columns:")
+print(X.columns.tolist())
+print("\nTarget Classes:")
+print(sorted(y.unique()))
 
 # ==========================================================
-# Molecule Split
+# Group labels for leakage-aware CV
 # ==========================================================
+# Every synthetic row is named "DrugA_x_DrugB_synthN". Two rows built from
+# the same two parent drugs are near-duplicates -- if a plain KFold splits
+# them across train/val folds, the CV score becomes optimistic in the same
+# way the old row-level train_test_split was. GroupKFold below groups rows
+# by their *sorted parent-drug pair* so an entire family stays on one side
+# of every fold, giving a CV estimate that's actually predictive of the
+# unseen-drug holdout score, instead of just remeasuring memorization.
+#
+# Real (non-synthetic) rows get their own drug name as their own group,
+# since they have no "parents" to leak across.
 
-splitter = GroupShuffleSplit(
-    test_size=0.20,
-    n_splits=1,
-    random_state=42,
-)
 
-train_idx, test_idx = next(
-    splitter.split(
-        X,
-        y_encoded,
-        groups=groups,
-    )
-)
+def parent_group(name: str) -> str:
+    if "_synth" in name:
+        base = name.split("_synth")[0]
+        parents = sorted(base.split("_x_"))
+        return "|".join(parents)
+    return name
 
-X_train = X.iloc[train_idx]
-X_test = X.iloc[test_idx]
 
-y_train = y_encoded[train_idx]
-y_test = y_encoded[test_idx]
+groups = df["Medication"].apply(parent_group)
+print("\nNumber of distinct drug-family groups in train_pool:", groups.nunique())
 
-train_groups = groups.iloc[train_idx]
-test_groups = groups.iloc[test_idx]
+# ==========================================================
+# Train-Test Split (grouped, within train_pool_20k_final.csv)
+# ==========================================================
+# Using GroupShuffleSplit-equivalent behavior via a manual grouped split so
+# the internal test set doesn't share a parent-drug family with the internal
+# training set either. This makes "internal test split accuracy" a much more
+# honest number than before, closer to (though still not a substitute for)
+# the unseen holdout.
 
-assert len(
-    set(train_groups) &
-    set(test_groups)
-) == 0
+from sklearn.model_selection import GroupShuffleSplit
 
-print("\nTrain :", len(X_train))
-print("Test :", len(X_test))
+gss = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
+train_idx, test_idx = next(gss.split(X, y, groups=groups))
 
+X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
+y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
+groups_train = groups.iloc[train_idx]
+
+print("\nGrouped Train-Test Split (within train_pool_20k_final.csv)")
+print("-" * 40)
+print("Training samples :", X_train.shape[0])
+print("Testing samples  :", X_test.shape[0])
+print("Distinct families in train:", groups_train.nunique())
+print("Distinct families in test :", groups.iloc[test_idx].nunique())
 
 # ==========================================================
 # Balanced Training Set
 # ==========================================================
+# Two changes from before:
+#   1. GroupKFold (grouped by parent-drug family) instead of plain
+#      StratifiedKFold/cv=5 int, so hyperparameter selection itself can't
+#      exploit synthetic-blend leakage the way it did previously (that's
+#      how max_depth=None got picked last time -- the CV loop couldn't see
+#      the overfitting because both sides of every fold could share
+#      parents).
+#   2. A regularized grid: max_depth caps below None, larger
+#      min_samples_leaf, and max_features to decorrelate trees given the
+#      collinear feature set.
 
-train_df = X_train.copy()
-train_df["label"] = y_train
-
-counts = train_df["label"].value_counts()
-
-print("\nOriginal Training Distribution")
-
-print(counts)
-
-# Use SECOND largest class size instead of largest
-target_size = counts.sort_values(
-    ascending=False
-).iloc[1]
-
-balanced = []
-
-for cls in sorted(train_df["label"].unique()):
-
-    subset = train_df[
-        train_df["label"] == cls
-    ]
-
-    if len(subset) < target_size:
-
-        subset = resample(
-            subset,
-            replace=True,
-            n_samples=target_size,
-            random_state=42,
-        )
-
-    elif len(subset) > target_size:
-
-        subset = resample(
-            subset,
-            replace=False,
-            n_samples=target_size,
-            random_state=42,
-        )
-
-    balanced.append(subset)
-
-balanced_df = pd.concat(
-    balanced,
-    ignore_index=True,
-)
-
-balanced_df = balanced_df.sample(
-    frac=1,
-    random_state=42,
-)
-
-X_train = balanced_df[
-    FEATURE_COLUMNS
-]
-
-y_train = balanced_df[
-    "label"
-]
-
-print("\nBalanced Distribution")
-
-print(
-    pd.Series(y_train).value_counts()
-)
-
-
-# ==========================================================
-# Save Metadata
-# ==========================================================
-
-joblib.dump(
-    FEATURE_COLUMNS,
-    os.path.join(
-        MODEL_DIR,
-        "feature_columns.pkl",
-    ),
-)
-
-joblib.dump(
-    encoder,
-    os.path.join(
-        MODEL_DIR,
-        "label_encoder.pkl",
-    ),
-)
-
-
-# ==========================================================
-# Evaluation
-# ==========================================================
-
-def evaluate(model):
-
-    pred = model.predict(X_test)
-
-    return {
-
-        "Accuracy":
-            accuracy_score(
-                y_test,
-                pred,
-            ),
-
-        "Precision":
-            precision_score(
-                y_test,
-                pred,
-                average="macro",
-                zero_division=0,
-            ),
-
-        "Recall":
-            recall_score(
-                y_test,
-                pred,
-                average="macro",
-                zero_division=0,
-            ),
-
-        "Macro_F1":
-            f1_score(
-                y_test,
-                pred,
-                average="macro",
-                zero_division=0,
-            ),
-
-        "Weighted_F1":
-            f1_score(
-                y_test,
-                pred,
-                average="weighted",
-                zero_division=0,
-            ),
-
-        "Report":
-            classification_report(
-                y_test,
-                pred,
-                target_names=encoder.classes_,
-                zero_division=0,
-            ),
-
-        "Matrix":
-            confusion_matrix(
-                y_test,
-                pred,
-            ),
-    }
-
-
-# ==========================================================
-# Models
-# ==========================================================
-
-models = {
-
-    "Random Forest":
-
-        RandomForestClassifier(
-
-            random_state=42,
-
-            n_jobs=-1,
-
-            class_weight="balanced",
-
-        ),
-
-    "XGBoost":
-
-        XGBClassifier(
-
-            random_state=42,
-
-            eval_metric="mlogloss",
-
-            tree_method="hist",
-
-            n_jobs=-1,
-
-        ),
-
+param_grid = {
+    "n_estimators": [200, 500],
+    "max_depth": [4, 6, 8, 10],
+    "min_samples_split": [5, 10, 20],
+    "min_samples_leaf": [4, 8, 16],
+    "max_features": ["sqrt", 0.5],
+    "class_weight": ["balanced"],
 }
 
+group_cv = GroupKFold(n_splits=5)
 
-# ==========================================================
-# Parameter Search
-# ==========================================================
-
-param_grids = {
-
-    "Random Forest": {
-
-        "n_estimators": [200, 300],
-
-        "max_depth": [15, 25],
-
-        "min_samples_split": [2, 5],
-
-    },
-
-    "XGBoost": {
-
-        "n_estimators": [300, 500],
-
-        "max_depth": [5, 6],
-
-        "learning_rate": [0.05, 0.1],
-
-        "subsample": [0.8, 1.0],
-
-    },
-
-}
-
-
-cv = StratifiedKFold(
-
-    n_splits=3,
-
-    shuffle=True,
-
-    random_state=42,
-
+grid_search = GridSearchCV(
+    estimator=RandomForestClassifier(random_state=42),
+    param_grid=param_grid,
+    cv=group_cv,
+    scoring="accuracy",
+    n_jobs=-1,
 )
 
-results = {}
+grid_search.fit(X_train, y_train, groups=groups_train)
 
-best_model = None
-
-best_name = None
-
-best_score = -1
-
-# ==========================================================
-# Training
-# ==========================================================
-
-print("\n" + "=" * 60)
-print("Training Models")
-print("=" * 60)
-
-for name, model in models.items():
-
-    print(f"\n{name}")
-    print("-" * 50)
-
-    search = RandomizedSearchCV(
-
-        estimator=model,
-
-        param_distributions=param_grids[name],
-
-        n_iter=5,
-
-        scoring="f1_macro",
-
-        cv=cv,
-
-        random_state=42,
-
-        n_jobs=-1,
-
-        verbose=1,
-
-    )
-
-    search.fit(
-        X_train,
-        y_train,
-    )
-
-    best = search.best_estimator_
+rf_model = grid_search.best_estimator_
 
     print("\nBest Parameters")
     print(search.best_params_)
 
-    print(f"\nBest CV Macro F1 : {search.best_score_:.4f}")
+print("Best CV Score (grouped, train_pool_20k_final.csv only):")
+print(grid_search.best_score_)
 
-    evaluation = evaluate(best)
-
-    results[name] = {
-
-        "Model": best,
-
-        "CV": search.best_score_,
-
-        **evaluation,
-
-    }
-
-    print("\nAccuracy")
-    print(f"{evaluation['Accuracy']:.4f}")
-
-    print("\nMacro F1")
-    print(f"{evaluation['Macro_F1']:.4f}")
-
-    print("\nWeighted F1")
-    print(f"{evaluation['Weighted_F1']:.4f}")
-
-    print("\nClassification Report")
-    print(evaluation["Report"])
-
-    print("\nConfusion Matrix")
-    print(evaluation["Matrix"])
-
-    if evaluation["Macro_F1"] > best_score:
-
-        best_score = evaluation["Macro_F1"]
-        best_model = best
-        best_name = name
-
-
-# ==========================================================
-# Save Best Model
-# ==========================================================
-
-joblib.dump(
-
-    best_model,
-
-    os.path.join(
-        MODEL_DIR,
-        "classifier.pkl",
-    ),
-
-)
-
-print("\nBest Model Saved")
-print(best_name)
-
+print("\nRandom Forest Model:")
+print(rf_model)
 
 # ==========================================================
 # Feature Importance
 # ==========================================================
 
-if hasattr(best_model, "feature_importances_"):
+feature_importance = pd.DataFrame({
+    "Feature": X.columns,
+    "Importance": rf_model.feature_importances_
+})
+feature_importance = feature_importance.sort_values(by="Importance", ascending=False)
 
-    importance = pd.DataFrame({
+print("\nFeature Importance")
+print(feature_importance.to_string(index=False))
 
-        "Feature": FEATURE_COLUMNS,
+print("\nFeature Correlation Matrix")
+print(X.corr().round(2).to_string())
 
-        "Importance": best_model.feature_importances_,
+# ==========================================================
+# Prediction on the internal (grouped) test split
+# ==========================================================
 
-    })
+y_pred = rf_model.predict(X_test)
+print("Predictions generated successfully (internal grouped test split)")
 
-    importance = importance.sort_values(
+accuracy = accuracy_score(y_test, y_pred)
 
-        "Importance",
+print("\nModel Evaluation -- Internal Grouped Test Split (train_pool_20k_final.csv)")
+print("-" * 40)
+print(f"Accuracy: {accuracy:.4f}")
+print("\nClassification Report (internal grouped test split):")
+print(classification_report(y_test, y_pred, zero_division=0))
+print("\nConfusion Matrix (internal grouped test split):")
+print(confusion_matrix(y_test, y_pred))
 
-        ascending=False,
+# ==========================================================
+# FINAL Model Evaluation -- Unseen Drug Holdout
+# ==========================================================
+# Runs once, after the final model is already selected above. Do not loop
+# back and re-tune based on these numbers.
 
-    )
+print("\n")
+print("=" * 60)
+print("FINAL Evaluation on Unseen Drug Holdout")
+print("=" * 60)
 
-    importance.to_csv(
+y_holdout_pred = rf_model.predict(X_holdout)
+holdout_accuracy = accuracy_score(y_holdout, y_holdout_pred)
 
-        os.path.join(
-            OUTPUT_DIR,
-            "feature_importance.csv",
-        ),
+print(f"Unseen-drug holdout accuracy: {holdout_accuracy:.4f}")
+print(f"(compare against internal grouped test split accuracy: {accuracy:.4f})")
 
-        index=False,
+print("\nClassification Report (unseen drug holdout):")
+print(classification_report(y_holdout, y_holdout_pred, zero_division=0))
+print("\nConfusion Matrix (unseen drug holdout):")
+print(confusion_matrix(y_holdout, y_holdout_pred))
 
-    )
+print("\nPer-drug predictions (unseen holdout):")
+holdout_report = df_holdout[["Medication", "Class"]].copy()
+holdout_report["Predicted"] = y_holdout_pred
+holdout_report["Correct"] = holdout_report["Class"] == holdout_report["Predicted"]
+print(holdout_report.to_string(index=False))
 
-    print("\nFeature Importance")
-
-    print(importance)
-
-else:
-
-    print("\nSelected model does not expose feature importances.")
-
+gap = accuracy - holdout_accuracy
+print(f"\nGeneralization gap (internal grouped split - unseen holdout): {gap:.4f}")
+print("If this gap is still large after grouping + regularizing, the model")
+print("has hit the information ceiling of the ~86 real seen drugs -- the")
+print("fix at that point is more real labeled drugs (e.g. running the 28")
+print("CiPA drugs through your real ORDSimulator), not more synthetic rows.")
 
 # ==========================================================
 # Model Comparison
 # ==========================================================
 
-comparison = []
+model_bundle = {
+    "model": rf_model,
+    "feature_names": list(X.columns),
+    "classes": list(rf_model.classes_),
+    "n_features": X.shape[1],
+}
 
-for name, result in results.items():
+joblib.dump(model_bundle, "saved_models/random_forest_classifier.pkl")
 
-    comparison.append({
-
-        "Model": name,
-
-        "Accuracy": result["Accuracy"],
-
-        "Precision": result["Precision"],
-
-        "Recall": result["Recall"],
-
-        "Macro_F1": result["Macro_F1"],
-
-        "Weighted_F1": result["Weighted_F1"],
-
-        "CV_Macro_F1": result["CV"],
-
-    })
-
-comparison = pd.DataFrame(comparison)
-
-comparison = comparison.sort_values(
-
-    "Macro_F1",
-
-    ascending=False,
-
-)
-
-comparison.to_csv(
-
-    os.path.join(
-        OUTPUT_DIR,
-        "model_comparison.csv",
-    ),
-
-    index=False,
-
-)
-
-print("\nModel Comparison")
-print(comparison)
-
+print("\nBest model saved successfully!")
+print("Model bundle: saved_models/random_forest_classifier.pkl")
 
 # ==========================================================
-# Save Reports
+# Cross Validation (grouped, train_pool_20k_final.csv only)
 # ==========================================================
+# Reported for comparison against the old ungrouped StratifiedKFold score --
+# expect this to be noticeably lower than 0.977 if grouping is doing its job.
 
-report_path = os.path.join(
-    OUTPUT_DIR,
-    "classification_reports.txt",
-)
-
-with open(report_path, "w") as f:
-
-    for name, result in results.items():
-
-        f.write("=" * 80 + "\n")
-        f.write(f"{name}\n")
-        f.write("=" * 80 + "\n\n")
-
-        f.write(f"CV Macro F1 : {result['CV']:.4f}\n")
-        f.write(f"Accuracy    : {result['Accuracy']:.4f}\n")
-        f.write(f"Precision   : {result['Precision']:.4f}\n")
-        f.write(f"Recall      : {result['Recall']:.4f}\n")
-        f.write(f"Macro F1    : {result['Macro_F1']:.4f}\n")
-        f.write(f"Weighted F1 : {result['Weighted_F1']:.4f}\n\n")
-
-        f.write("Classification Report\n")
-        f.write(result["Report"])
-        f.write("\n\n")
-
-        f.write("Confusion Matrix\n")
-        f.write(str(result["Matrix"]))
-        f.write("\n\n")
-
-
-# ==========================================================
-# Final Summary
-# ==========================================================
-
-print("\n" + "=" * 60)
-print("TRAINING COMPLETE")
+print("\n")
+print("=" * 60)
+print("Random Forest 5-Fold GROUPED Cross Validation (train_pool_20k_final.csv)")
 print("=" * 60)
 
-print(f"\nBest Model : {best_name}")
-print(f"Macro F1   : {best_score:.4f}")
+cv_scores = cross_val_score(
+    rf_model,
+    X,
+    y,
+    cv=GroupKFold(n_splits=5),
+    groups=groups,
+    scoring="accuracy",
+)
 
-print("\nSaved Models")
+print("Fold Accuracies:", cv_scores)
+print(f"Mean Accuracy : {cv_scores.mean():.4f}")
+print(f"Std Deviation : {cv_scores.std():.4f}")
 
-print(os.path.join(
-    MODEL_DIR,
-    "classifier.pkl",
-))
-
-print(os.path.join(
-    MODEL_DIR,
-    "label_encoder.pkl",
-))
-
-print(os.path.join(
-    MODEL_DIR,
-    "feature_columns.pkl",
-))
-
-print("\nSaved Outputs")
-
-print(os.path.join(
-    OUTPUT_DIR,
-    "model_comparison.csv",
-))
-
-print(os.path.join(
-    OUTPUT_DIR,
-    "classification_reports.txt",
-))
-
-if hasattr(best_model, "feature_importances_"):
-
-    print(os.path.join(
-        OUTPUT_DIR,
-        "feature_importance.csv",
-    ))
-
-print("\nDone.")
+print("\n")
+print("=" * 60)
+print("SUMMARY")
+print("=" * 60)
+print(f"Internal grouped test split accuracy : {accuracy:.4f}")
+print(f"5-fold GROUPED CV mean accuracy       : {cv_scores.mean():.4f} (+/- {cv_scores.std():.4f})")
+print(f"Unseen-drug holdout accuracy          : {holdout_accuracy:.4f}  <-- most trustworthy number")

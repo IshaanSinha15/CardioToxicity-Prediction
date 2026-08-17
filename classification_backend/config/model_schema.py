@@ -1,0 +1,31 @@
+FEATURE_NAMES = [
+    "RMP",
+    "Peak",
+    "APD50",
+    "APD90",
+    "Triangulation",
+    "APA",
+    "Block_IKr",
+    "Block_INa",
+    "Block_INaL",
+    "Block_ICaL",
+    "Block_IKs",
+    "Block_IK1",
+    "Block_Ito",
+]
+
+FEATURE_UNITS = {
+    "RMP": "mV",
+    "Peak": "mV",
+    "APD50": "ms",
+    "APD90": "ms",
+    "Triangulation": "ms",
+    "APA": "mV",
+    "Block_IKr": "%",
+    "Block_INa": "%",
+    "Block_INaL": "%",
+    "Block_ICaL": "%",
+    "Block_IKs": "%",
+    "Block_IK1": "%",
+    "Block_Ito": "%",
+}

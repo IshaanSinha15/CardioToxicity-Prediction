@@ -10,3 +10,4 @@ pytest
 matplotlib
 joblib
 deepchem
+myokit
