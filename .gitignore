@@ -95,3 +95,4 @@ data/features/
 
 # ORd virtual environment
 ord-env/
+.csv
