@@ -1,12 +1,29 @@
 import os
 import myokit
-import matplotlib.pyplot as plt
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
 
-from classification_backend.feature_extraction.ap_features import APFeatureExtractor
+from classification_backend.feature_extraction.ap_features import (
+    APFeatureExtractor,
+)
 
 
 class ORDSimulator:
+    """
+    Optimized ORd simulator.
+
+    Improvements:
+    ----------------
+    • CellML compiled only once.
+    • One Simulation object reused.
+    • No set_rhs().
+    • No recompilation.
+    • Conductances changed using set_constant().
+    • Simulation reset before every run.
+    """
+
     def __init__(self):
+
         root_dir = os.path.dirname(
             os.path.dirname(
                 os.path.dirname(__file__)
@@ -17,23 +34,71 @@ class ORDSimulator:
             root_dir,
             "ord_engine",
             "cellml",
-            "ToRORd_dynCl_epi.cellml"
+            "ToRORd_dynCl_epi.cellml",
         )
 
         importer = myokit.formats.importer("cellml")
         self.model = importer.model(model_path)
 
-        print("Loaded model:", self.model.name())
+        # Compile ONCE
+        # Create pacing protocol
+        protocol = myokit.pacing.blocktrain(
+            period=1000,
+            duration=0.5,
+            offset=0,
+            level=1,
+        )
 
-    # ==========================================================
-    # DEBUG
-    # ==========================================================
+        # Compile once
+        self.sim = myokit.Simulation(
+            self.model,
+            protocol,
+        )
+
+        # ----------------------------------------
+        # Variables that should be modified
+        # ----------------------------------------
+
+        self.constant_map = {
+            "ina": "INa.GNa",
+            "inal": "INaL.GNaL_b",
+            "ical": "ICaL.PCa_b",
+            "ikr": "IKr.GKr_b",
+            "iks": "IKs.GKs_b",
+            "ik1": "IK1.GK1_b",
+            "ito": "Ito.Gto_b",
+        }
+
+        # ----------------------------------------
+        # Store original values once
+        # ----------------------------------------
+
+        self.baseline = {}
+
+        for key, var_name in self.constant_map.items():
+            var = self.model.get(var_name)
+
+            # Get the constant's current value from its RHS
+            value = var.eval()
+
+            self.baseline[key] = float(value)
+
+        # Requested blocks (%)
+        self.blocks = {
+            "ina": 0.0,
+            "inal": 0.0,
+            "ical": 0.0,
+            "ikr": 0.0,
+            "iks": 0.0,
+            "ik1": 0.0,
+            "ito": 0.0,
+        }
+
+    # ======================================================
+    # Optional debugging helper
+    # ======================================================
 
     def inspect_component(self, component_name):
-        """
-        Print all variables inside a component.
-        Useful only for debugging.
-        """
 
         comp = self.model.get(component_name)
 
@@ -42,36 +107,10 @@ class ORDSimulator:
         for var in comp.variables():
             print(var.name())
 
-    # ==========================================================
-    # GENERIC BLOCK FUNCTION
-    # ==========================================================
-
-    def _apply_block(self, variable_path, block_percent):
-        """
-        Reduce channel conductance/permeability by block_percent.
-        """
-
-        if block_percent <= 0:
-            return
-
-        try:
-            var = self.model.get(variable_path)
-
-            original_rhs = var.rhs()
-
-            scale = 1 - (block_percent / 100.0)
-
-            var.set_rhs(f"({original_rhs}) * {scale}")
-
-            print(f"{variable_path} blocked by {block_percent:.2f}%")
-
-        except Exception as e:
-            print(f"Could not block {variable_path}")
-            print(e)
-
-    # ==========================================================
-    # MULTI CHANNEL BLOCK
-    # ==========================================================
+    # ======================================================
+    # Store requested channel blocks
+    # (No recompilation here)
+    # ======================================================
 
     def apply_channel_blocks(
         self,
@@ -83,90 +122,84 @@ class ORDSimulator:
         ik1=0,
         ito=0,
     ):
-        """
-        Apply blocks to all supported ion channels.
-        """
 
-        channel_map = {
+        self.blocks["ikr"] = float(ikr)
+        self.blocks["ina"] = float(ina)
+        self.blocks["inal"] = float(inal)
+        self.blocks["ical"] = float(ical)
+        self.blocks["iks"] = float(iks)
+        self.blocks["ik1"] = float(ik1)
+        self.blocks["ito"] = float(ito)
 
-            # Rapid delayed rectifier
-            "IKr.GKr": ikr,
-
-            # Fast sodium
-            "INa.GNa": ina,
-
-            # Late sodium
-            "INaL.GNaL": inal,
-
-            # L-type calcium
-            "ICaL.PCa": ical,
-
-            # Slow delayed rectifier
-            "IKs.GKs": iks,
-
-            # Inward rectifier
-            "IK1.GK1": ik1,
-
-            # Transient outward
-            "Ito.Gto": ito,
-        }
-
-        for variable, block in channel_map.items():
-            self._apply_block(variable, block)
-
-    # ==========================================================
-    # BACKWARD COMPATIBILITY
-    # ==========================================================
-
+    # Backward compatibility
     def apply_ikr_block(self, block_percent):
-        """
-        Existing function kept so older code still works.
-        """
+        self.apply_channel_blocks(ikr=block_percent)
 
-        self.apply_channel_blocks(
-            ikr=block_percent
-        )
+    # ======================================================
+    # Restore baseline constants
+    # ======================================================
 
-    # ==========================================================
-    # RUN SIMULATION
-    # ==========================================================
+    def _restore_constants(self):
 
-    def run(self, duration=3000):
+        for key, variable in self.constant_map.items():
+            self.sim.set_constant(
+                variable,
+                self.baseline[key]
+            )
 
-        sim = myokit.Simulation(self.model)
+    # ======================================================
+    # Apply current block percentages
+    # ======================================================
 
-        data = sim.run(
+    def _apply_constants(self):
+
+        for key, variable in self.constant_map.items():
+
+            original = self.baseline[key]
+
+            block = max(0.0, min(100.0, self.blocks[key]))
+
+            scale = 1.0 - (block / 100.0)
+
+            self.sim.set_constant(
+                variable,
+                float(original * scale)
+            )
+
+    # ======================================================
+    # Run Simulation
+    # ======================================================
+
+    def run(
+        self,
+        duration=3000,
+        prepace=1000,
+        log_interval=0.1,
+    ):
+
+        self.sim.reset()
+
+        self._restore_constants()
+        self._apply_constants()
+
+        if prepace > 0:
+            self.sim.pre(prepace)
+
+        data = self.sim.run(
             duration,
-            log_interval=0.1
+            log_interval=log_interval,
         )
 
         return data
 
 
-# ==============================================================
+# ==========================================================
 # TEST
-# ==============================================================
+# ==========================================================
 
 if __name__ == "__main__":
 
     simulator = ORDSimulator()
-
-    # ----------------------------------------------------------
-    # Uncomment ONLY if you want to inspect variables
-    # ----------------------------------------------------------
-    #
-    # simulator.inspect_component("IKr")
-    # simulator.inspect_component("INa")
-    # simulator.inspect_component("INaL")
-    # simulator.inspect_component("ICaL")
-    # simulator.inspect_component("IKs")
-    # simulator.inspect_component("IK1")
-    # simulator.inspect_component("Ito")
-    #
-
-    # ----------------------------------------------------------
-    # MULTI CHANNEL TEST
-    # ----------------------------------------------------------
 
     simulator.apply_channel_blocks(
         ikr=50,
@@ -175,7 +208,7 @@ if __name__ == "__main__":
         ical=30,
         iks=15,
         ik1=10,
-        ito=25
+        ito=25,
     )
 
     result = simulator.run()
@@ -183,19 +216,17 @@ if __name__ == "__main__":
     time = result["environment.time"]
     voltage = result["membrane.v"]
 
-    print("\nSimulation successful")
-    print("Data points:", len(time))
+    print("Simulation successful")
+    print("Points:", len(time))
 
     plt.figure(figsize=(10, 4))
-
     plt.plot(time, voltage)
 
     plt.xlabel("Time (ms)")
-    plt.ylabel("Membrane Voltage (mV)")
+    plt.ylabel("Voltage (mV)")
     plt.title("Action Potential")
 
     plt.grid(True)
-
     plt.xlim(0, 500)
 
     os.makedirs("outputs", exist_ok=True)
@@ -205,19 +236,19 @@ if __name__ == "__main__":
     plt.savefig(
         output_path,
         dpi=300,
-        bbox_inches="tight"
+        bbox_inches="tight",
     )
 
-    print(f"Plot saved to {output_path}")
+    print("Saved:", output_path)
 
     extractor = APFeatureExtractor(
         time,
-        voltage
+        voltage,
     )
 
     features = extractor.extract_features()
 
-    print("\nExtracted Features:")
+    print("\nExtracted Features")
 
     for key, value in features.items():
         print(f"{key}: {value:.2f}")
