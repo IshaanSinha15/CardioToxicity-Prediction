@@ -1,0 +1,138 @@
+{
+    "chemical_xai": {
+        "molecule_svg": "<?xml version='1.0' encoding='iso-8859-1'?>\n<svg version='1.1' baseProfile='full'\n              xmlns='http://www.w3.org/2000/svg'\n                      xmlns:rdkit='http://www.rdkit.org/xml'\n                      xmlns:xlink='http://www.w3.org/1999/xlink'\n                  xml:space='preserve'\nwidth='500px' height='500px' viewBox='0 0 500 500'>\n<!-- END OF HEADER -->\n<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='500.0' height='500.0' x='0.0' y='0.0'> </rect>\n<path class='bond-3 atom-3 atom-4' d='M 248.1,234.1 L 259.3,237.7 L 261.8,249.3 L 194.8,309.8 L 181.1,294.5 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />\n<path class='bond-4 atom-4 atom-5' d='M 228.0,140.0 L 250.5,147.3 L 268.1,229.8 L 259.3,237.7 L 248.1,234.1 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />\n<path class='bond-12 atom-4 atom-9' d='M 268.1,229.8 L 348.4,255.7 L 353.3,278.9 L 261.8,249.3 L 259.3,237.7 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />\n<path class='bond-5 atom-5 atom-6' d='M 308.2,67.6 L 313.1,90.8 L 250.5,147.3 L 228.0,140.0 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />\n<path class='bond-6 atom-6 atom-7' d='M 308.2,67.6 L 411.0,100.9 L 393.4,116.8 L 313.1,90.8 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />\n<path class='bond-7 atom-7 atom-8' d='M 411.0,100.9 L 433.6,206.5 L 411.0,199.2 L 393.4,116.8 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />\n<path class='bond-8 atom-8 atom-9' d='M 411.0,199.2 L 433.6,206.5 L 353.3,278.9 L 348.4,255.7 Z' style='fill:#FF7F7F;fill-rule:evenodd;fill-opacity:1;stroke:#FF7F7F;stroke-width:0.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />\n<ellipse cx='187.9' cy='302.4' rx='19.2' ry='19.8' class='atom-3'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<ellipse cx='259.3' cy='237.7' rx='19.2' ry='19.2' class='atom-4'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<ellipse cx='239.2' cy='143.6' rx='19.2' ry='19.2' class='atom-5'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<ellipse cx='310.7' cy='79.2' rx='19.2' ry='19.2' class='atom-6'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<ellipse cx='402.2' cy='108.8' rx='19.2' ry='19.2' class='atom-7'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<ellipse cx='422.3' cy='202.9' rx='19.2' ry='19.2' class='atom-8'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<ellipse cx='350.9' cy='267.3' rx='19.2' ry='19.2' class='atom-9'  style='fill:#FF7F7F;fill-rule:evenodd;stroke:#FF7F7F;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-0 atom-0 atom-1' d='M 25.0,337.0 L 96.4,272.5' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-1 atom-1 atom-2' d='M 104.3,275.1 L 95.7,234.7' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-1 atom-1 atom-2' d='M 95.7,234.7 L 87.1,194.3' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-1 atom-1 atom-2' d='M 90.2,278.1 L 81.6,237.7' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-1 atom-1 atom-2' d='M 81.6,237.7 L 73.0,197.3' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-2 atom-1 atom-3' d='M 96.4,272.5 L 172.3,297.1' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-3 atom-3 atom-4' d='M 203.6,288.0 L 259.3,237.7' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-4 atom-4 atom-5' d='M 259.3,237.7 L 239.2,143.6' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-4 atom-4 atom-5' d='M 271.7,226.5 L 255.1,148.8' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-5 atom-5 atom-6' d='M 239.2,143.6 L 310.7,79.2' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-6 atom-6 atom-7' d='M 310.7,79.2 L 402.2,108.8' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-6 atom-6 atom-7' d='M 314.1,95.5 L 389.8,120.0' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-7 atom-7 atom-8' d='M 402.2,108.8 L 422.3,202.9' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-8 atom-8 atom-9' d='M 422.3,202.9 L 350.9,267.3' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-8 atom-8 atom-9' d='M 406.4,197.8 L 347.4,251.0' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-9 atom-9 atom-10' d='M 350.9,267.3 L 371.0,361.4' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-10 atom-10 atom-11' d='M 364.8,367.0 L 404.7,379.9' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-10 atom-10 atom-11' d='M 404.7,379.9 L 444.6,392.8' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-10 atom-10 atom-11' d='M 369.2,353.3 L 409.1,366.2' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-10 atom-10 atom-11' d='M 409.1,366.2 L 449.0,379.1' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-11 atom-10 atom-12' d='M 371.0,361.4 L 343.1,386.6' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-11 atom-10 atom-12' d='M 343.1,386.6 L 315.2,411.7' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path class='bond-12 atom-9 atom-4' d='M 350.9,267.3 L 259.3,237.7' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />\n<path d='M 92.8,275.8 L 96.4,272.5 L 100.2,273.8' style='fill:none;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />\n<path d='M 240.2,148.3 L 239.2,143.6 L 242.8,140.4' style='fill:none;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />\n<path d='M 307.1,82.4 L 310.7,79.2 L 315.2,80.7' style='fill:none;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />\n<path d='M 397.6,107.3 L 402.2,108.8 L 403.2,113.5' style='fill:none;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />\n<path d='M 421.3,198.2 L 422.3,202.9 L 418.7,206.1' style='fill:none;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />\n<path d='M 370.0,356.7 L 371.0,361.4 L 369.6,362.7' style='fill:none;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />\n<path class='atom-2' d='M 63.8 178.5\nQ 63.8 172.0, 67.0 168.3\nQ 70.3 164.7, 76.3 164.7\nQ 82.3 164.7, 85.6 168.3\nQ 88.8 172.0, 88.8 178.5\nQ 88.8 185.2, 85.5 188.9\nQ 82.3 192.7, 76.3 192.7\nQ 70.3 192.7, 67.0 188.9\nQ 63.8 185.2, 63.8 178.5\nM 76.3 189.6\nQ 80.5 189.6, 82.7 186.8\nQ 85.0 184.0, 85.0 178.5\nQ 85.0 173.2, 82.7 170.5\nQ 80.5 167.8, 76.3 167.8\nQ 72.2 167.8, 69.9 170.5\nQ 67.6 173.2, 67.6 178.5\nQ 67.6 184.0, 69.9 186.8\nQ 72.2 189.6, 76.3 189.6\n' fill='#FF0000'/>\n<path class='atom-3' d='M 175.4 302.2\nQ 175.4 295.7, 178.7 292.0\nQ 181.9 288.4, 187.9 288.4\nQ 194.0 288.4, 197.2 292.0\nQ 200.4 295.7, 200.4 302.2\nQ 200.4 308.9, 197.2 312.6\nQ 193.9 316.4, 187.9 316.4\nQ 181.9 316.4, 178.7 312.6\nQ 175.4 308.9, 175.4 302.2\nM 187.9 313.3\nQ 192.1 313.3, 194.3 310.5\nQ 196.6 307.7, 196.6 302.2\nQ 196.6 296.9, 194.3 294.2\nQ 192.1 291.5, 187.9 291.5\nQ 183.8 291.5, 181.5 294.2\nQ 179.3 296.8, 179.3 302.2\nQ 179.3 307.7, 181.5 310.5\nQ 183.8 313.3, 187.9 313.3\n' fill='#000000'/>\n<path class='atom-11' d='M 450.0 391.1\nQ 450.0 384.6, 453.2 380.9\nQ 456.5 377.2, 462.5 377.2\nQ 468.5 377.2, 471.8 380.9\nQ 475.0 384.6, 475.0 391.1\nQ 475.0 397.7, 471.7 401.5\nQ 468.5 405.2, 462.5 405.2\nQ 456.5 405.2, 453.2 401.5\nQ 450.0 397.8, 450.0 391.1\nM 462.5 402.1\nQ 466.7 402.1, 468.9 399.4\nQ 471.2 396.6, 471.2 391.1\nQ 471.2 385.8, 468.9 383.1\nQ 466.7 380.3, 462.5 380.3\nQ 458.3 380.3, 456.1 383.0\nQ 453.8 385.7, 453.8 391.1\nQ 453.8 396.6, 456.1 399.4\nQ 458.3 402.1, 462.5 402.1\n' fill='#FF0000'/>\n<path class='atom-12' d='M 260.2 412.4\nL 263.8 412.4\nL 263.8 424.0\nL 277.8 424.0\nL 277.8 412.4\nL 281.5 412.4\nL 281.5 439.6\nL 277.8 439.6\nL 277.8 427.0\nL 263.8 427.0\nL 263.8 439.6\nL 260.2 439.6\nL 260.2 412.4\n' fill='#FF0000'/>\n<path class='atom-12' d='M 287.1 425.9\nQ 287.1 419.4, 290.3 415.7\nQ 293.5 412.1, 299.6 412.1\nQ 305.6 412.1, 308.8 415.7\nQ 312.1 419.4, 312.1 425.9\nQ 312.1 432.5, 308.8 436.3\nQ 305.5 440.0, 299.6 440.0\nQ 293.6 440.0, 290.3 436.3\nQ 287.1 432.6, 287.1 425.9\nM 299.6 437.0\nQ 303.7 437.0, 305.9 434.2\nQ 308.2 431.4, 308.2 425.9\nQ 308.2 420.6, 305.9 417.9\nQ 303.7 415.2, 299.6 415.2\nQ 295.4 415.2, 293.1 417.8\nQ 290.9 420.5, 290.9 425.9\nQ 290.9 431.4, 293.1 434.2\nQ 295.4 437.0, 299.6 437.0\n' fill='#FF0000'/>\n</svg>\n",
+        "substructures": [
+            {
+                "name": "Aromatic Ring",
+                "importance": 0.9,
+                "atoms": [
+                    [
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9
+                    ]
+                ]
+            },
+            {
+                "name": "Phenol",
+                "importance": 0.8,
+                "atoms": [
+                    [
+                        7,
+                        6,
+                        5,
+                        4,
+                        9,
+                        8,
+                        3
+                    ]
+                ]
+            }
+        ],
+        "explanation": [
+            {
+                "substructure": "Aromatic Ring",
+                "importance": 0.9,
+                "message": "Aromatic rings are associated with hydrophobic interactions that can increase hERG channel binding."
+            },
+            {
+                "substructure": "Phenol",
+                "importance": 0.8,
+                "message": "Phenol groups influence polarity and may affect ion-channel interactions."
+            }
+        ],
+        "svg_path": "D:\\CardioToxicity-Prediction\\classification_backend\\xai\\results\\chemical_xai.svg"
+    },
+    "classification_xai": {
+        "prediction": 3,
+        "confidence": 0.526518578652334,
+        "probabilities": [
+            0.001467969172497586,
+            0.4716728347068201,
+            0.526518578652334,
+            0.00034061746834833297
+        ],
+        "top_features": [
+            {
+                "feature": "RMP",
+                "importance": 0.1112862065515633,
+                "abs_importance": 0.1112862065515633
+            },
+            {
+                "feature": "Triangulation",
+                "importance": 0.09948934196203628,
+                "abs_importance": 0.09948934196203628
+            },
+            {
+                "feature": "APD90",
+                "importance": 0.08985203252772157,
+                "abs_importance": 0.08985203252772157
+            },
+            {
+                "feature": "APD50",
+                "importance": 0.08854381906052318,
+                "abs_importance": 0.08854381906052318
+            },
+            {
+                "feature": "Peak",
+                "importance": -0.065742539144847,
+                "abs_importance": 0.065742539144847
+            },
+            {
+                "feature": "APA",
+                "importance": -0.06424781787157773,
+                "abs_importance": 0.06424781787157773
+            },
+            {
+                "feature": "IC50_ICaL",
+                "importance": -0.04450367019197851,
+                "abs_importance": 0.04450367019197851
+            },
+            {
+                "feature": "Block_INa",
+                "importance": 0.014365156391479996,
+                "abs_importance": 0.014365156391479996
+            },
+            {
+                "feature": "Block_IKs",
+                "importance": 0.014331790401869963,
+                "abs_importance": 0.014331790401869963
+            },
+            {
+                "feature": "Block_IKr",
+                "importance": 0.012325769524129665,
+                "abs_importance": 0.012325769524129665
+            }
+        ],
+        "classification_xai": {
+            "prediction": 3,
+            "confidence": 0.526518578652334,
+            "top_features": "          feature  importance  abs_importance\n0             RMP    0.111286        0.111286\n4   Triangulation    0.099489        0.099489\n3           APD90    0.089852        0.089852\n2           APD50    0.088544        0.088544\n1            Peak   -0.065743        0.065743\n5             APA   -0.064248        0.064248\n15      IC50_ICaL   -0.044504        0.044504\n7       Block_INa    0.014365        0.014365\n10      Block_IKs    0.014332        0.014332\n6       Block_IKr    0.012326        0.012326",
+            "message": "The compound was classified as High risk with 0.53 confidence. The most influential features were RMP, Triangulation, APD90, APD50, Peak."
+        },
+        "bar_plot": "D:\\CardioToxicity-Prediction\\classification_backend\\xai\\results\\bar_plot.png",
+        "waterfall_plot": "D:\\CardioToxicity-Prediction\\classification_backend\\xai\\results\\waterfall_plot.png",
+        "report": "D:\\CardioToxicity-Prediction\\classification_backend\\xai\\results\\xai_report.json",
+        "shap_values": [
+            0.1112862065515633,
+            -0.065742539144847,
+            0.08854381906052318,
+            0.08985203252772157,
+            0.09948934196203628,
+            -0.06424781787157773,
+            0.012325769524129665,
+            0.014365156391479996,
+            0.0103646377806129,
+            0.011558358904356981,
+            0.014331790401869963,
+            0.00042038124405254933,
+            -0.001303140086651202,
+            0.0019673813880162643,
+            -0.002174950439127977,
+            -0.04450367019197851
+        ]
+    }
+}

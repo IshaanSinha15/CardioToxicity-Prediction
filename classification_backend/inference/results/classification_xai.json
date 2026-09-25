@@ -1,0 +1,140 @@
+{
+    "prediction": 2,
+    "confidence": 0.5489422451405274,
+    "probabilities": [
+        0.11066842964044728,
+        0.5489422451405274,
+        0.3311141464888528,
+        0.009275178730172359
+    ],
+    "top_features": [
+        {
+            "feature": "APD90",
+            "importance": 0.10713177540416564,
+            "abs_importance": 0.10713177540416564
+        },
+        {
+            "feature": "IC50_ICaL",
+            "importance": 0.10571181004350765,
+            "abs_importance": 0.10571181004350765
+        },
+        {
+            "feature": "APD50",
+            "importance": 0.08505740792357945,
+            "abs_importance": 0.08505740792357945
+        },
+        {
+            "feature": "IC50_INa",
+            "importance": 0.053436416234547555,
+            "abs_importance": 0.053436416234547555
+        },
+        {
+            "feature": "Block_IK1",
+            "importance": -0.034644440692275826,
+            "abs_importance": 0.034644440692275826
+        },
+        {
+            "feature": "Block_INa",
+            "importance": 0.025718669566542455,
+            "abs_importance": 0.025718669566542455
+        },
+        {
+            "feature": "APA",
+            "importance": 0.024722838865606653,
+            "abs_importance": 0.024722838865606653
+        },
+        {
+            "feature": "Peak",
+            "importance": 0.023052970572711162,
+            "abs_importance": 0.023052970572711162
+        },
+        {
+            "feature": "Block_IKs",
+            "importance": -0.022316004475476943,
+            "abs_importance": 0.022316004475476943
+        },
+        {
+            "feature": "Triangulation",
+            "importance": -0.020660751196452182,
+            "abs_importance": 0.020660751196452182
+        }
+    ],
+    "classification_xai": {
+        "prediction": 2,
+        "confidence": 0.5489422451405274,
+        "top_features": [
+            {
+                "feature": "APD90",
+                "importance": 0.10713177540416564,
+                "abs_importance": 0.10713177540416564
+            },
+            {
+                "feature": "IC50_ICaL",
+                "importance": 0.10571181004350765,
+                "abs_importance": 0.10571181004350765
+            },
+            {
+                "feature": "APD50",
+                "importance": 0.08505740792357945,
+                "abs_importance": 0.08505740792357945
+            },
+            {
+                "feature": "IC50_INa",
+                "importance": 0.053436416234547555,
+                "abs_importance": 0.053436416234547555
+            },
+            {
+                "feature": "Block_IK1",
+                "importance": -0.034644440692275826,
+                "abs_importance": 0.034644440692275826
+            },
+            {
+                "feature": "Block_INa",
+                "importance": 0.025718669566542455,
+                "abs_importance": 0.025718669566542455
+            },
+            {
+                "feature": "APA",
+                "importance": 0.024722838865606653,
+                "abs_importance": 0.024722838865606653
+            },
+            {
+                "feature": "Peak",
+                "importance": 0.023052970572711162,
+                "abs_importance": 0.023052970572711162
+            },
+            {
+                "feature": "Block_IKs",
+                "importance": -0.022316004475476943,
+                "abs_importance": 0.022316004475476943
+            },
+            {
+                "feature": "Triangulation",
+                "importance": -0.020660751196452182,
+                "abs_importance": 0.020660751196452182
+            }
+        ],
+        "message": "The compound was classified as High risk with 0.55 confidence. The most influential features were APD90, IC50_ICaL, APD50, IC50_INa, Block_IK1."
+    },
+    "bar_plot": "C:\\Users\\HP\\Desktop\\capstone_project\\classification_backend\\inference\\results\\bar_plot.png",
+    "waterfall_plot": "C:\\Users\\HP\\Desktop\\capstone_project\\classification_backend\\inference\\results\\waterfall_plot.png",
+    "report": "C:\\Users\\HP\\Desktop\\capstone_project\\classification_backend\\inference\\results\\xai_report.json",
+    "shap_values": [
+        -0.01886649490438208,
+        0.023052970572711162,
+        0.08505740792357945,
+        0.10713177540416564,
+        -0.020660751196452182,
+        0.024722838865606653,
+        -0.0011517637377634702,
+        0.025718669566542455,
+        -0.01599213386456519,
+        0.0020466031509577508,
+        -0.022316004475476943,
+        -0.034644440692275826,
+        -0.020542996784756726,
+        0.006105200821603577,
+        0.053436416234547555,
+        0.10571181004350765
+    ]
+}

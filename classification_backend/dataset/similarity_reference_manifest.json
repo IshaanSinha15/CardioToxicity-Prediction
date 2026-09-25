@@ -1,0 +1,15 @@
+{
+  "source_path": "classification_backend\\dataset\\combined_ic50_dataset.csv",
+  "source_sha256": "728335abdf983302ea47316f034ecde3b3fb6eaa98356358ace33576217c380e",
+  "output_path": "classification_backend\\dataset\\similarity_reference.csv",
+  "accepted_count": 15132,
+  "rejected_count": 30,
+  "duplicate_count": 6906,
+  "fingerprint": {
+    "family": "Morgan",
+    "radius": 2,
+    "n_bits": 2048,
+    "use_chirality": true
+  },
+  "source_policy": "molecule-level canonical structure; synthetic dose rows excluded"
+}

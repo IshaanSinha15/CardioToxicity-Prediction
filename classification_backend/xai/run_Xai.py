@@ -3,14 +3,22 @@ run_xai.py
 
 Main entry point for the XAI module.
 
-This module orchestrates the complete workflow:
-1. Load model
-2. Predict class
+Workflow
+--------
+1. Load trained model
+2. Predict cardiotoxicity class
 3. Compute SHAP values
-4. Generate plots
-5. Generate JSON report
+4. Extract top SHAP features
+5. Generate SHAP visualizations
+6. Generate Classification XAI explanation
+7. Generate report
+8. Save Classification XAI JSON
 """
 
+import json
+from pathlib import Path
+
+from classification_backend.xai.classification_xai import ClassificationXAI
 from classification_backend.xai.model_loader import ModelLoader
 from classification_backend.xai.predictor import Predictor
 from classification_backend.xai.shap_explainer import ShapExplainer
@@ -40,7 +48,10 @@ FEATURE_NAMES = [
 
 class XAIPipeline:
 
-    def __init__(self):
+    def __init__(self, output_dir=None):
+
+        self.results_dir = Path(output_dir) if output_dir else Path(__file__).parent / "results"
+        self.results_dir.mkdir(parents=True, exist_ok=True)
 
         self.model = ModelLoader().load_model()
 
@@ -51,15 +62,21 @@ class XAIPipeline:
 
         self.explainer = ShapExplainer(self.model)
 
-        self.visualizer = ShapVisualizer()
+        self.visualizer = ShapVisualizer(self.results_dir)
 
-        self.report = ReportGenerator()
+        self.report = ReportGenerator(self.results_dir)
+
+        self.classification_xai = ClassificationXAI()
 
     def explain(self, feature_vector):
+
+        # ---------------- Prediction ----------------
 
         prediction = self.predictor.predict(
             feature_vector
         )
+
+        # ---------------- SHAP ----------------
 
         explanation = self.explainer.explain(
             prediction["input_dataframe"]
@@ -70,6 +87,15 @@ class XAIPipeline:
             prediction["prediction"],
         )
 
+        # ---------------- Top Features ----------------
+
+        top_features = self.explainer.get_top_features(
+            class_explanation,
+            top_n=10,
+        )
+
+        # ---------------- Plots ----------------
+
         bar_plot = self.visualizer.bar_plot(
             class_explanation
         )
@@ -77,6 +103,8 @@ class XAIPipeline:
         waterfall_plot = self.visualizer.waterfall_plot(
             class_explanation
         )
+
+        # ---------------- Report ----------------
 
         report_path = self.report.generate_report(
             prediction=prediction["prediction"],
@@ -87,12 +115,20 @@ class XAIPipeline:
             shap_values=class_explanation.values,
         )
 
-        print(type(prediction["prediction"]))
-        print(type(prediction["confidence"]))
-        print(type(prediction["probabilities"]))
-        print(type(class_explanation.values))
+        # ---------------- Classification XAI ----------------
 
-        return {
+        classification_result = self.classification_xai.explain(
+            prediction=prediction["prediction"],
+            confidence=prediction["confidence"],
+            top_features=top_features,
+        )
+        classification_result["top_features"] = top_features.to_dict(
+            orient="records"
+        )
+
+        # ---------------- Final Result ----------------
+
+        result = {
 
             "prediction": int(prediction["prediction"]),
 
@@ -103,6 +139,12 @@ class XAIPipeline:
                 if hasattr(prediction["probabilities"], "tolist")
                 else prediction["probabilities"]
             ),
+
+            "top_features": top_features.to_dict(
+                orient="records"
+            ),
+
+            "classification_xai": classification_result,
 
             "bar_plot": str(bar_plot),
 
@@ -116,6 +158,23 @@ class XAIPipeline:
                 else class_explanation.values
             ),
         }
+
+        # ---------------- Save JSON ----------------
+
+        json_path = self.results_dir / "classification_xai.json"
+
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(
+                result,
+                f,
+                indent=4,
+                default=str,
+            )
+
+        print("\nClassification XAI JSON saved at:")
+        print(json_path.resolve())
+
+        return result
 
 
 if __name__ == "__main__":
@@ -134,6 +193,9 @@ if __name__ == "__main__":
         0.00,
         0.00,
         4.50,
+        1000.0,
+        5000.0,
+        8000.0,
     ]
 
     pipeline = XAIPipeline()
@@ -143,11 +205,14 @@ if __name__ == "__main__":
     print("\n========== XAI RESULT ==========\n")
 
     print("Prediction :", result["prediction"])
-
     print("Confidence :", result["confidence"])
 
-    print("Bar Plot :", result["bar_plot"])
+    print("\nTop Features")
+    print(result["top_features"])
 
+    print("\nClassification XAI")
+    print(result["classification_xai"])
+
+    print("\nBar Plot :", result["bar_plot"])
     print("Waterfall :", result["waterfall_plot"])
-
     print("Report :", result["report"])

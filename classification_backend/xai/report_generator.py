@@ -19,6 +19,17 @@ class ReportGenerator:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
+    def generate(self, xai_result):
+        """Return a JSON-safe report for a chemical-XAI result."""
+        return {
+            "summary": {
+                "num_substructures": len(xai_result.get("substructures", [])),
+            },
+            "substructures": xai_result.get("substructures", []),
+            "explanation": xai_result.get("explanation", []),
+            "molecule_svg": xai_result.get("molecule_svg", ""),
+        }
+
     def generate_report(
         self,
         prediction,

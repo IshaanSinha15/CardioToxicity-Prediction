@@ -16,14 +16,11 @@
 ![ORd voltage](ord_simulation_voltage.png)
 
 ## Simulation Features
-- **RMP**: -90.74808065677433
-- **Peak**: 32.357062985634705
-- **APD50**: 192.5
-- **APD90**: 233.3
-- **Triangulation**: 40.80000000000001
-- **APA**: 123.10514364240905
+- **status**: complete
+- **features**: {'RMP': -90.74628898038942, 'Peak': 32.398092195150284, 'APD50': 195.072404959668, 'APD90': 236.13747936891136, 'Triangulation': 41.06507440924335}
+- **artifacts**: {'voltage_plot': 'C:\\Users\\HP\\Desktop\\capstone_project\\classification_backend\\inference\\results\\ord_voltage.png'}
 
 ## Classification
-- Predicted class: **4** (Very High)
-- Description: Very high blocking
-- Probabilities: {"1": 0.05786023358758634, "2": 0.012932636061519754, "3": 0.036380181358814115, "4": 0.8928269489920798}
+- Predicted class: **3** (High)
+- Description: High blocking
+- Probabilities: [0.07314412466656776, 0.4146362149607505, 0.48614955960528344, 0.026070100767398834]
