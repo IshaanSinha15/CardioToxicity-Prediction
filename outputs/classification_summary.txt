@@ -1,0 +1,6 @@
+input_smiles: CCO
+input_dose_nm: 100.0
+predicted_class: 3
+label: High
+description: High blocking
+probabilities: [0.07314412466656776, 0.4146362149607505, 0.48614955960528344, 0.026070100767398834]

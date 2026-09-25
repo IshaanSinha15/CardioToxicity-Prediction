@@ -60,6 +60,10 @@ class ClassifierService:
     # Prediction
     # ==========================================================
 
+    def get_prediction_model(self):
+        """Return the fitted estimator used for prediction and XAI."""
+        return self._predictor
+
     def predict(
         self,
         features_df: pd.DataFrame,

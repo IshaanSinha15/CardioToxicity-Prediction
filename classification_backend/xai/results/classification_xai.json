@@ -1,0 +1,89 @@
+{
+    "prediction": 3,
+    "confidence": 0.526518578652334,
+    "probabilities": [
+        0.001467969172497586,
+        0.4716728347068201,
+        0.526518578652334,
+        0.00034061746834833297
+    ],
+    "top_features": [
+        {
+            "feature": "RMP",
+            "importance": 0.1112862065515633,
+            "abs_importance": 0.1112862065515633
+        },
+        {
+            "feature": "Triangulation",
+            "importance": 0.09948934196203628,
+            "abs_importance": 0.09948934196203628
+        },
+        {
+            "feature": "APD90",
+            "importance": 0.08985203252772157,
+            "abs_importance": 0.08985203252772157
+        },
+        {
+            "feature": "APD50",
+            "importance": 0.08854381906052318,
+            "abs_importance": 0.08854381906052318
+        },
+        {
+            "feature": "Peak",
+            "importance": -0.065742539144847,
+            "abs_importance": 0.065742539144847
+        },
+        {
+            "feature": "APA",
+            "importance": -0.06424781787157773,
+            "abs_importance": 0.06424781787157773
+        },
+        {
+            "feature": "IC50_ICaL",
+            "importance": -0.04450367019197851,
+            "abs_importance": 0.04450367019197851
+        },
+        {
+            "feature": "Block_INa",
+            "importance": 0.014365156391479996,
+            "abs_importance": 0.014365156391479996
+        },
+        {
+            "feature": "Block_IKs",
+            "importance": 0.014331790401869963,
+            "abs_importance": 0.014331790401869963
+        },
+        {
+            "feature": "Block_IKr",
+            "importance": 0.012325769524129665,
+            "abs_importance": 0.012325769524129665
+        }
+    ],
+    "classification_xai": {
+        "prediction": 3,
+        "confidence": 0.526518578652334,
+        "top_features": "          feature  importance  abs_importance\n0             RMP    0.111286        0.111286\n4   Triangulation    0.099489        0.099489\n3           APD90    0.089852        0.089852\n2           APD50    0.088544        0.088544\n1            Peak   -0.065743        0.065743\n5             APA   -0.064248        0.064248\n15      IC50_ICaL   -0.044504        0.044504\n7       Block_INa    0.014365        0.014365\n10      Block_IKs    0.014332        0.014332\n6       Block_IKr    0.012326        0.012326",
+        "message": "The compound was classified as High risk with 0.53 confidence. The most influential features were RMP, Triangulation, APD90, APD50, Peak."
+    },
+    "bar_plot": "D:\\CardioToxicity-Prediction\\classification_backend\\xai\\results\\bar_plot.png",
+    "waterfall_plot": "D:\\CardioToxicity-Prediction\\classification_backend\\xai\\results\\waterfall_plot.png",
+    "report": "D:\\CardioToxicity-Prediction\\classification_backend\\xai\\results\\xai_report.json",
+    "shap_values": [
+        0.1112862065515633,
+        -0.065742539144847,
+        0.08854381906052318,
+        0.08985203252772157,
+        0.09948934196203628,
+        -0.06424781787157773,
+        0.012325769524129665,
+        0.014365156391479996,
+        0.0103646377806129,
+        0.011558358904356981,
+        0.014331790401869963,
+        0.00042038124405254933,
+        -0.001303140086651202,
+        0.0019673813880162643,
+        -0.002174950439127977,
+        -0.04450367019197851
+    ]
+}

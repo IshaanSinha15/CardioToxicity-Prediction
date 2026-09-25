@@ -4,7 +4,9 @@ Usage:
     python -m pipeline.run_pipeline --smiles "CCO" --dose 100
 """
 import argparse
+import contextlib
 import json
+import io
 
 from .prediction_pipeline import PredictionPipeline
 
@@ -18,17 +20,20 @@ def main():
     parser.add_argument("--interactive", action="store_true", help="Run interactive prompt to type SMILES and dose")
     args = parser.parse_args()
 
-    pipeline = PredictionPipeline()
-
     # CLI single-run mode
     if not args.interactive and args.smiles:
         payload = {"smiles": args.smiles, "dose_nm": args.dose, "drug_name": args.drug_name}
         if args.skip_sim:
             payload["skip_simulation"] = True
 
-        result = pipeline.run(payload)
+        # Keep model/XAI startup logs off stdout so the response is valid JSON.
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            pipeline = PredictionPipeline()
+            result = pipeline.run(payload)
         print(json.dumps(result, indent=2))
         return
+
+    pipeline = PredictionPipeline()
 
     # Interactive loop mode
     print("\nInteractive prediction mode. Type 'exit' to quit.")

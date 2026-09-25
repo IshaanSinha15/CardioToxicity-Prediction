@@ -1,469 +1,247 @@
-import os
-import joblib
-import numpy as np
+"""Interactive CLI for the complete classification-backend inference pipeline."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
 import pandas as pd
 
-from prediction_backend.inference.predict import predict
+from pipeline.prediction_pipeline import PredictionPipeline
 
 
-# ==========================================================
-# Paths
-# ==========================================================
-
-ROOT_DIR = os.path.dirname(
-    os.path.dirname(
-        os.path.dirname(__file__)
-    )
-)
-
-DATASET = os.path.join(
-    ROOT_DIR,
-    "classification_backend",
-    "dataset",
-    "classifier_dataset_labeled.csv",
-)
-
-MODEL_DIR = os.path.join(
-    ROOT_DIR,
-    "classification_backend",
-    "saved_models",
-)
+ROOT_DIR = Path(__file__).resolve().parents[2]
+DATASET_PATH = ROOT_DIR / "classification_backend" / "dataset" / "classifier_dataset_labeled.csv"
 
 
-# ==========================================================
-# Load Models
-# ==========================================================
-
-classifier = joblib.load(
-    os.path.join(
-        MODEL_DIR,
-        "classifier.pkl",
-    )
-)
-
-encoder = joblib.load(
-    os.path.join(
-        MODEL_DIR,
-        "label_encoder.pkl",
-    )
-)
-
-feature_columns = joblib.load(
-    os.path.join(
-        MODEL_DIR,
-        "feature_columns.pkl",
-    )
-)
+def print_section(title: str) -> None:
+    print("\n" + "=" * 60)
+    print(title)
+    print("=" * 60)
 
 
-dataset = pd.read_csv(DATASET)
-dataset["smiles"] = dataset["smiles"].astype(str)
+def load_reference_dataset() -> pd.DataFrame:
+    dataset = pd.read_csv(DATASET_PATH)
+    dataset["smiles"] = dataset["smiles"].astype(str)
+    return dataset
 
 
-# ==========================================================
-# Hill Equation
-# ==========================================================
-
-def block_percent(
-    dose_nm,
-    ic50_nm,
-):
-    return (
-        dose_nm /
-        (dose_nm + ic50_nm)
-    ) * 100
+def find_reference_row(dataset: pd.DataFrame, smiles: str, dose_nm: float) -> pd.Series | None:
+    rows = dataset[dataset["smiles"] == smiles]
+    if rows.empty:
+        return None
+    return rows.loc[(rows["dose_nm"] - dose_nm).abs().idxmin()]
 
 
-# ==========================================================
-# Dominant Channel
-# ==========================================================
-
-def dominant_channel(
-    ikr,
-    ina,
-    ical,
-):
-
-    values = {
-
-        "IKr": ikr,
-        "INa": ina,
-        "ICaL": ical,
-
+def print_regression(result: dict[str, Any], reference: pd.Series | None) -> None:
+    print_section("Regression Output")
+    prediction = result["ic50_prediction"]
+    predicted = {
+        "IKr": prediction["herg"]["IC50_nM"],
+        "INa": prediction["nav"]["IC50_nM"],
+        "ICaL": prediction["cav"]["IC50_nM"],
     }
+    for channel, value in predicted.items():
+        print(f"{channel:<5}: {value:.2f} nM")
 
-    return max(
-        values,
-        key=values.get,
-    )
-
-
-# ==========================================================
-# Explain Prediction
-# ==========================================================
-
-def explain_prediction(
-    ikr,
-    ina,
-    ical,
-):
-
-    explanation = []
-
-    # IKr
-
-    if ikr >= 50:
-        explanation.append("Strong IKr block")
-
-    elif ikr >= 20:
-        explanation.append("Moderate IKr block")
-
-    elif ikr >= 5:
-        explanation.append("Mild IKr block")
-
-
-    # INa
-
-    if ina >= 50:
-        explanation.append("Strong INa block")
-
-    elif ina >= 20:
-        explanation.append("Moderate INa block")
-
-    elif ina >= 5:
-        explanation.append("Mild INa block")
-
-
-    # ICaL
-
-    if ical >= 50:
-        explanation.append("Strong ICaL block")
-
-    elif ical >= 20:
-        explanation.append("Moderate ICaL block")
-
-    elif ical >= 5:
-        explanation.append("Mild ICaL block")
-
-
-    if len(explanation) == 0:
-
-        explanation.append(
-            "Minimal ion channel inhibition"
+    print_section("IC50 Predicted vs Output")
+    if reference is None:
+        print("No reference output found for this SMILES.")
+        return
+    observed = {
+        "IKr": reference["IC50_IKr"],
+        "INa": reference["IC50_INa"],
+        "ICaL": reference["IC50_ICaL"],
+    }
+    for channel, value in predicted.items():
+        print(
+            f"{channel:<5}: predicted={value:.2f} nM, "
+            f"output={observed[channel]:.2f} nM, "
+            f"error={abs(value - observed[channel]):.2f} nM"
         )
 
-    return explanation
+
+def print_dosage(result: dict[str, Any]) -> None:
+    print_section("Dosage")
+    dosage = result["input"]
+    print(f"Concentration : {dosage['concentration_nm']:.2f} nM")
+    print(f"Type          : {dosage['concentration_type']}")
 
 
-# ==========================================================
-# Dataset Lookup
-# ==========================================================
-
-def lookup_dataset(
-    smiles,
-    dose,
-):
-
-    compound = dataset[
-        dataset["smiles"] == smiles
-    ]
-
-    if len(compound) == 0:
-
-        return None, None
-
-    doses = sorted(
-        compound["dose_nm"].unique()
-    )
-
-    idx = (
-        abs(
-            compound["dose_nm"] - dose
-        )
-    ).idxmin()
-
-    row = compound.loc[idx]
-
-    return row, doses
+def print_hill_equation(result: dict[str, Any]) -> None:
+    print_section("Hill Equation")
+    response = result["dose_response"]
+    print(f"Concentration : {response['concentration_nm']:.2f} nM")
+    print(f"hERG block    : {response['herg_block']:.2f}%")
+    print(f"Nav block     : {response['nav_block']:.2f}%")
+    print(f"Cav block     : {response['cav_block']:.2f}%")
 
 
-# ==========================================================
-# Interactive CLI
-# ==========================================================
+def print_channel_block(result: dict[str, Any]) -> None:
+    print_section("Channel Block")
+    response = result["dose_response"]
+    print(f"hERG          : {response['herg_block']:.2f}%")
+    print(f"Nav1.5        : {response['nav_block']:.2f}%")
+    print(f"Cav1.2        : {response['cav_block']:.2f}%")
 
-print("=" * 60)
-print("Cardiotoxicity Classification Predictor")
-print("=" * 60)
 
-while True:
-
-    smiles = input(
-        "\nEnter SMILES (or exit): "
-    ).strip()
-
-    if smiles.lower() == "exit":
-        break
-
-    try:
-
-        dose = float(
-            input(
-                "Enter Dose (nM): "
-            )
+def print_safety_margin(result: dict[str, Any]) -> None:
+    print_section("Safety Margin")
+    for margin in result["safety_margins"]:
+        print(
+            f"{margin['channel']:<8}: {margin['margin']:.4f} "
+            f"({margin['risk_class']})"
         )
 
-    except ValueError:
 
-        print("Invalid dose.")
-
-        continue
-
-
-    # ------------------------------------------------------
-    # Regression Prediction
-    # ------------------------------------------------------
-
-    try:
-
-        regression = predict(smiles)
-
-    except Exception as e:
-
-        print("\nPrediction Failed")
-
-        print(e)
-
-        continue
+def print_ord(result: dict[str, Any]) -> None:
+    print_section("ORd Outputs")
+    simulation = result["simulation"]
+    print(f"Status: {simulation['status']}")
+    if simulation["status"] == "complete":
+        for name, value in simulation["features"].items():
+            print(f"{name:<15}: {value:.4f}")
+    elif simulation.get("error"):
+        print(f"Reason: {simulation['error']}")
 
 
-    ikr_ic50 = regression["herg"]["IC50_nM"]
-    ina_ic50 = regression["nav"]["IC50_nM"]
-    ical_ic50 = regression["cav"]["IC50_nM"]
+def print_artifacts(result: dict[str, Any]) -> None:
+    print_section("Generated Results")
+    for category, artifacts in result.get("artifacts", {}).items():
+        if not artifacts:
+            continue
+        print(f"{category}:")
+        for name, path in artifacts.items():
+            print(f"  {name}: {path}")
 
 
-    # ------------------------------------------------------
-    # Channel Block
-    # ------------------------------------------------------
-
-    block_ikr = block_percent(
-        dose,
-        ikr_ic50,
-    )
-
-    block_ina = block_percent(
-        dose,
-        ina_ic50,
-    )
-
-    block_ical = block_percent(
-        dose,
-        ical_ic50,
-    )
+def print_classification(result: dict[str, Any]) -> None:
+    print_section("Classification Result")
+    print(f"Class           : {result['mechanistic_classification']}")
+    risk = result["mechanistic_risk"]
+    print(f"Risk level      : {risk.get('level', 'unavailable')}")
+    print(f"Dominant channel: {risk.get('dominant_channel', 'unavailable')}")
 
 
-    # ------------------------------------------------------
-    # Classifier Prediction
-    # ------------------------------------------------------
+def print_interpretation(result: dict[str, Any]) -> None:
+    print_section("Interpretation")
+    interpretation = result["interpretation"]
+    level = interpretation.get("level", "unknown")
+    risk = result["mechanistic_risk"]
+    dominant = risk.get("dominant_channel", "the measured channels")
+    margins = result.get("safety_margins", [])
+    matches = result.get("similarity", {}).get("matches", [])
 
-    features = pd.DataFrame(
-
-        [[
-
-            dose,
-            block_ikr,
-            block_ina,
-            block_ical,
-
-        ]],
-
-        columns=feature_columns,
-
-    )
-
-    encoded = classifier.predict(
-        features
-    )[0]
-
-    probabilities = classifier.predict_proba(
-        features
-    )[0]
-
-    predicted_label = encoder.inverse_transform(
-        [encoded]
-    )[0]
-
-
-    # ------------------------------------------------------
-    # Dataset Lookup
-    # ------------------------------------------------------
-
-    actual, doses = lookup_dataset(
-        smiles,
-        dose,
-    )
-    # ======================================================
-    # Regression Prediction
-    # ======================================================
-
-    print("\n" + "=" * 60)
-    print("Regression Prediction")
-    print("=" * 60)
-
-    print(f"IKr IC50  : {ikr_ic50:.2f} nM")
-    print(f"INa IC50  : {ina_ic50:.2f} nM")
-    print(f"ICaL IC50 : {ical_ic50:.2f} nM")
-
-
-    # ======================================================
-    # Channel Block
-    # ======================================================
-
-    print("\n" + "=" * 60)
-    print("Channel Block")
-    print("=" * 60)
-
-    print(f"Dose : {dose:.2f} nM\n")
-
-    print(f"IKr  : {block_ikr:.2f}%")
-    print(f"INa  : {block_ina:.2f}%")
-    print(f"ICaL : {block_ical:.2f}%")
-
-    print(
-        f"\nDominant Channel : "
-        f"{dominant_channel(block_ikr, block_ina, block_ical)}"
-    )
-
-
-    # ======================================================
-    # Prediction Explanation
-    # ======================================================
-
-    print("\n" + "=" * 60)
-    print("Prediction Explanation")
-    print("=" * 60)
-
-    for item in explain_prediction(
-        block_ikr,
-        block_ina,
-        block_ical,
-    ):
-        print(f"• {item}")
-
-
-    # ======================================================
-    # Classifier Output
-    # ======================================================
-
-    print("\n" + "=" * 60)
-    print("Classifier Prediction")
-    print("=" * 60)
-
-    print(f"Predicted Risk : {predicted_label}")
-
-    print("\nClass Probabilities")
-
-    for cls, prob in zip(
-        encoder.classes_,
-        probabilities,
-    ):
-        print(f"{cls:<15}: {prob * 100:.2f}%")
-
-
-    # ======================================================
-    # Dataset Comparison
-    # ======================================================
-
-    print("\n" + "=" * 60)
-    print("Dataset Lookup")
-    print("=" * 60)
-
-    if actual is None:
-
-        print("Compound not found in dataset.")
-
+    if level == "low_mechanistic_concern":
+        print(
+            f"The predicted concern is low. The strongest signal comes from {dominant}, "
+            "but the measured channel block is low at this dose."
+        )
+    elif level == "moderate_concern":
+        print(
+            f"The predicted concern is moderate. The results show meaningful activity "
+            f"at {dominant}, so this compound should be reviewed further."
+        )
+    elif level in {"high_concern", "review_required"}:
+        print(
+            f"The results require review. The strongest signal is associated with {dominant} "
+            "or the available evidence is conflicting."
+        )
     else:
+        print("There is not enough evidence to make a reliable interpretation.")
 
-        print("Compound Found")
+    if margins:
+        safe_count = sum(margin.get("risk_class") == "Safe" for margin in margins)
+        print(f"Safety margin summary: {safe_count} of {len(margins)} channels are in the safe range.")
+    if matches:
+        print(f"Similarity summary: {len(matches)} related compounds were found for comparison.")
+    else:
+        print("Similarity summary: no sufficiently similar reference compounds were found.")
+    if interpretation.get("requires_review"):
+        print("Follow-up: expert review is recommended.")
 
-        print("\nAvailable Doses")
 
-        for d in doses:
-            print(f"{d} nM")
+def print_similarity(result: dict[str, Any]) -> None:
+    print_section("Similarity Result")
+    similarity = result["similarity"]
+    print(f"Status: {similarity['status']}")
+    print(f"Method: {similarity.get('method', 'unavailable')}")
+    for index, match in enumerate(similarity.get("matches", []), start=1):
+        name = match["name_or_id"] or match["reference_id"]
+        print(f"{index}. {name} ({match['similarity']:.4f})")
 
-        print(f"\nRequested Dose : {dose:.2f} nM")
-        print(f"Closest Dose   : {actual['dose_nm']:.2f} nM")
 
-        print(f"\nActual Risk : {actual['RiskClass']}")
-
-        print("\nDataset IC50")
-
-        print(f"IKr  : {actual['IC50_IKr']:.2f} nM")
-        print(f"INa  : {actual['IC50_INa']:.2f} nM")
-        print(f"ICaL : {actual['IC50_ICaL']:.2f} nM")
-
-        print("\nDataset Block")
-
-        print(f"IKr  : {actual['Block_IKr']:.2f}%")
-        print(f"INa  : {actual['Block_INa']:.2f}%")
-        print(f"ICaL : {actual['Block_ICaL']:.2f}%")
-
-        print("\nIC50 Sources")
-
-        print(f"IKr  : {actual['IKr_Source']}")
-        print(f"INa  : {actual['INa_Source']}")
-        print(f"ICaL : {actual['ICaL_Source']}")
-
-        print("\nRegression Error")
-
-        print(
-            f"IKr  : {abs(ikr_ic50 - actual['IC50_IKr']):.2f} nM"
-        )
-
-        print(
-            f"INa  : {abs(ina_ic50 - actual['IC50_INa']):.2f} nM"
-        )
-
-        print(
-            f"ICaL : {abs(ical_ic50 - actual['IC50_ICaL']):.2f} nM"
-        )
-
-        print("\nPrediction Result")
-
-        if predicted_label == actual["RiskClass"]:
-
-            print("✓ Correct Prediction")
-
+def print_xai(result: dict[str, Any], key: str) -> None:
+    title = "Chemical XAI Result" if key == "chemical" else "Classification XAI Result"
+    print_section(title)
+    xai = result["xai"][key]
+    print(f"Status: {xai['status']}")
+    if xai["status"] == "complete":
+        explanation = xai["result"]
+        if key == "chemical":
+            print(f"Substructures: {len(explanation.get('substructures', []))}")
+            print("Explanation:")
+            for item in explanation.get("explanation", []):
+                print(f"  - {item.get('message', 'No explanation available.')}")
+            print(f"SVG          : {explanation.get('svg_path', 'unavailable')}")
         else:
+            print(f"Prediction   : {explanation['prediction']}")
+            print(f"Confidence   : {explanation['confidence']:.4f}")
+            print(f"Top features : {explanation.get('top_features', [])}")
+            print(f"Report       : {explanation.get('report', 'unavailable')}")
+    elif xai.get("error"):
+        print(f"Reason: {xai['error']}")
 
-            print("✗ Incorrect Prediction")
+
+def print_warnings(result: dict[str, Any]) -> None:
+    warnings = result.get("warnings", [])
+    if warnings:
+        print_section("Warnings")
+        for warning in warnings:
+            print(f"- {warning}")
 
 
-    # ======================================================
-    # Summary
-    # ======================================================
+def main() -> None:
+    dataset = load_reference_dataset()
+    pipeline = PredictionPipeline()
 
-    print("\n" + "=" * 60)
-    print("Prediction Summary")
+    print("=" * 60)
+    print("Cardiotoxicity Classification Predictor")
     print("=" * 60)
 
-    print(f"SMILES         : {smiles}")
-    print(f"Dose           : {dose:.2f} nM")
+    while True:
+        smiles = input("\nEnter SMILES (or exit): ").strip()
+        if smiles.lower() == "exit":
+            break
+        try:
+            dose_nm = float(input("Enter Dose (nM): "))
+        except ValueError:
+            print("Invalid dose.")
+            continue
 
-    print(f"\nPredicted Risk : {predicted_label}")
+        try:
+            result = pipeline.run({"smiles": smiles, "dose_nm": dose_nm})
+        except Exception as exc:
+            print(f"\nPrediction failed: {exc}")
+            continue
 
-    if actual is not None:
+        reference = find_reference_row(dataset, smiles, dose_nm)
+        print_regression(result, reference)
+        print_dosage(result)
+        print_hill_equation(result)
+        print_xai(result, key="chemical")
+        print_channel_block(result)
+        print_safety_margin(result)
+        print_classification(result)
+        print_similarity(result)
+        print_interpretation(result)
+        print_xai(result, key="classification")
+        print_ord(result)
+        print_artifacts(result)
+        print_warnings(result)
 
-        print(f"Actual Risk    : {actual['RiskClass']}")
+    print("\nExiting Predictor...")
 
-    print(
-        f"\nDominant Block : "
-        f"{dominant_channel(block_ikr, block_ina, block_ical)}"
-    )
 
-    confidence = probabilities.max() * 100
-
-    print(f"Confidence     : {confidence:.2f}%")
-
-    print("\n" + "-" * 60)
-
-print("\nExiting Predictor...")
+if __name__ == "__main__":
+    main()

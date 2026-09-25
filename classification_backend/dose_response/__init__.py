@@ -4,10 +4,16 @@ from .channel_block_generator import ChannelBlockGenerator, ChannelIC50Inputs, C
 from .concentration_profiles import (
     DEFAULT_MULTIPLES,
     ConcentrationProfile,
+    ConcentrationProfileError,
+    ConcentrationType,
+    ExposureContext,
+    TypedExposure,
     calculate_free_concentration,
     calculate_total_concentration,
     categorize_exposure,
     generate_concentration_series,
+    oral_cmax_nm,
+    parse_typed_exposure,
 )
 from .dose_response_curve import (
     DoseResponseCurve,
