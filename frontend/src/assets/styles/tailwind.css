@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/* Import your project styles */
+@import "./variables.css";
+@import "./globals.css";
+@import "./animations.css";
+@import "./components.css";

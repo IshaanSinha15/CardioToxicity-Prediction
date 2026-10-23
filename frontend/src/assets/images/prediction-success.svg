@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+
+<circle cx="200"
+cy="200"
+r="120"
+fill="#DCFCE7"/>
+
+<circle cx="200"
+cy="200"
+r="90"
+fill="#22C55E"/>
+
+<path d="M160 200
+L190 230
+L245 170"
+stroke="white"
+stroke-width="12"
+fill="none"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+</svg>

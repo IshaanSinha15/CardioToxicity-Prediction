@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+
+<circle cx="200"
+cy="200"
+r="120"
+fill="#FEE2E2"/>
+
+<circle cx="200"
+cy="200"
+r="90"
+fill="#EF4444"/>
+
+<line x1="165" y1="165"
+x2="235" y2="235"
+stroke="white"
+stroke-width="12"/>
+
+<line x1="235" y1="165"
+x2="165" y2="235"
+stroke="white"
+stroke-width="12"/>
+
+</svg>

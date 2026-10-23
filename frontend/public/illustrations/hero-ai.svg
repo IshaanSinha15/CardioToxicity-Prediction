@@ -1,0 +1,33 @@
+<!-- public/illustrations/hero-ai.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EFF6FF"/>
+      <stop offset="100%" stop-color="#ECFEFF"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#14B8A6"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="600" rx="24" fill="url(#bg)"/>
+
+  <rect x="120" y="220" width="180" height="90" rx="18" fill="white" stroke="#CBD5E1"/>
+  <text x="160" y="275" font-size="26" fill="#0F172A">SMILES</text>
+
+  <rect x="420" y="180" width="220" height="160" rx="24" fill="url(#card)"/>
+  <text x="455" y="265" font-size="28" fill="white">ChemBERTa</text>
+
+  <rect x="800" y="220" width="220" height="90" rx="18" fill="white" stroke="#CBD5E1"/>
+  <text x="835" y="275" font-size="24" fill="#0F172A">IC50 Prediction</text>
+
+  <path d="M300 265 L420 265" stroke="#2563EB" stroke-width="6"/>
+  <path d="M640 265 L800 265" stroke="#14B8A6" stroke-width="6"/>
+
+  <circle cx="520" cy="120" r="10" fill="#2563EB"/>
+  <circle cx="560" cy="80" r="10" fill="#14B8A6"/>
+  <circle cx="610" cy="120" r="10" fill="#2563EB"/>
+  <line x1="520" y1="120" x2="560" y2="80" stroke="#2563EB" stroke-width="3"/>
+  <line x1="560" y1="80" x2="610" y2="120" stroke="#14B8A6" stroke-width="3"/>
+</svg>

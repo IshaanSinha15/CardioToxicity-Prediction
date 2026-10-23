@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400">
+
+<rect width="500" height="400" fill="#F8FAFC"/>
+
+<rect x="150" y="80"
+width="200"
+height="160"
+rx="14"
+fill="white"
+stroke="#CBD5E1"/>
+
+<line x1="180" y1="130" x2="320" y2="130"
+stroke="#CBD5E1"
+stroke-width="4"/>
+
+<line x1="180" y1="170" x2="280" y2="170"
+stroke="#CBD5E1"
+stroke-width="4"/>
+
+<text x="145"
+y="320"
+font-size="24"
+fill="#64748B"
+font-family="Inter">
+
+No Prediction Data
+
+</text>
+
+</svg>
