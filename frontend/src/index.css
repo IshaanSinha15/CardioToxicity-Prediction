@@ -1,0 +1,816 @@
+/* =========================================================
+   CARDIOTOX AI
+   GLOBAL / SHELL STYLES
+   ========================================================= */
+
+:root {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color: #f5f7fb;
+  background: #02050a;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --ct-bg: #02050a;
+  --ct-bg-2: #050a12;
+  --ct-sidebar: #03070d;
+
+  --ct-panel: rgba(9, 19, 36, 0.72);
+  --ct-panel-dark: rgba(4, 10, 20, 0.78);
+
+  --ct-white: #f7f9fc;
+  --ct-text: #dce6f5;
+  --ct-muted: #7c8ea8;
+  --ct-muted-dark: #465a75;
+
+  --ct-blue: #3b82f6;
+  --ct-blue-light: #60a5fa;
+  --ct-cyan: #22d3ee;
+  --ct-purple: #8b5cf6;
+  --ct-green: #22c55e;
+
+  --ct-border: rgba(120, 155, 210, 0.15);
+  --ct-border-light: rgba(120, 155, 210, 0.22);
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+
+  width: 100%;
+  min-height: 100%;
+
+  background: var(--ct-bg);
+
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+
+  min-width: 320px;
+  min-height: 100vh;
+
+  color: var(--ct-white);
+
+  background:
+    radial-gradient(
+      ellipse 70% 50% at 75% -10%,
+      rgba(31, 91, 220, 0.13),
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 55% 45% at 15% 75%,
+      rgba(105, 42, 180, 0.08),
+      transparent 70%
+    ),
+    #02050a;
+
+  overflow-x: hidden;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+button,
+input,
+textarea,
+select {
+  font-size: inherit;
+}
+
+button {
+  border: 0;
+}
+
+a {
+  color: inherit;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #02050a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #15243a;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #243b5d;
+}
+
+
+/* =========================================================
+   SELECTION
+   ========================================================= */
+
+::selection {
+  background: rgba(59, 130, 246, 0.35);
+  color: white;
+}
+
+
+/* =========================================================
+   APPLICATION SHELL
+   ========================================================= */
+
+.cardiotox-shell {
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+
+  background:
+    radial-gradient(
+      ellipse 55% 35% at 72% 5%,
+      rgba(31, 92, 230, 0.09),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 45% 35% at 30% 75%,
+      rgba(102, 48, 190, 0.065),
+      transparent 70%
+    ),
+    #02050a;
+
+  overflow-x: hidden;
+}
+
+
+/* =========================================================
+   AMBIENT LIGHT
+   ========================================================= */
+
+.ambient {
+  position: fixed;
+
+  pointer-events: none;
+
+  border-radius: 50%;
+
+  filter: blur(110px);
+
+  opacity: 0.75;
+
+  z-index: 0;
+}
+
+.ambient-one {
+  width: 520px;
+  height: 520px;
+
+  top: -220px;
+  right: 5%;
+
+  background: rgba(30, 94, 245, 0.11);
+
+  animation: ambientFloatOne 12s ease-in-out infinite;
+}
+
+.ambient-two {
+  width: 440px;
+  height: 440px;
+
+  left: 10%;
+  bottom: -220px;
+
+  background: rgba(104, 42, 190, 0.075);
+
+  animation: ambientFloatTwo 15s ease-in-out infinite;
+}
+
+.ambient-three {
+  width: 360px;
+  height: 360px;
+
+  top: 40%;
+  right: 25%;
+
+  background: rgba(0, 188, 220, 0.045);
+
+  animation: ambientFloatThree 10s ease-in-out infinite;
+}
+
+@keyframes ambientFloatOne {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(-45px, 35px, 0);
+  }
+}
+
+@keyframes ambientFloatTwo {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(40px, -35px, 0);
+  }
+}
+
+@keyframes ambientFloatThree {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.15);
+  }
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.cardiotox-sidebar {
+  position: fixed;
+
+  inset: 0 auto 0 0;
+
+  width: 276px;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 28px 20px 20px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(4, 9, 16, 0.97),
+      rgba(2, 6, 12, 0.98)
+    );
+
+  border-right: 1px solid rgba(105, 145, 205, 0.14);
+
+  box-shadow:
+    20px 0 70px rgba(0, 0, 0, 0.18);
+
+  z-index: 100;
+
+  overflow-y: auto;
+}
+
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 0 9px;
+}
+
+.brand-mark {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #60a5fa;
+
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      rgba(64, 145, 255, 0.18),
+      transparent 65%
+    ),
+    rgba(7, 20, 39, 0.8);
+
+  border: 1px solid rgba(63, 137, 255, 0.45);
+
+  border-radius: 13px;
+
+  box-shadow:
+    0 0 30px rgba(35, 110, 255, 0.09),
+    inset 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.brand-name {
+  color: #f5f7fb;
+
+  font-size: 17px;
+  font-weight: 750;
+
+  letter-spacing: -0.02em;
+}
+
+.brand-subtitle {
+  margin-top: 5px;
+
+  color: #5d708b;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.19em;
+}
+
+
+/* =========================================================
+   SIDEBAR DIVIDER
+   ========================================================= */
+
+.sidebar-divider {
+  height: 1px;
+
+  margin: 25px 9px 30px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(120, 150, 200, 0.18),
+      transparent
+    );
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-label {
+  padding: 0 12px;
+
+  margin-bottom: 13px;
+
+  color: #4d6079;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 0.20em;
+}
+
+.sidebar-link {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  min-height: 49px;
+
+  padding: 0 13px;
+
+  gap: 13px;
+
+  margin-bottom: 6px;
+
+  color: #71839d;
+
+  text-decoration: none;
+
+  border: 1px solid transparent;
+
+  border-radius: 12px;
+
+  transition:
+    transform 200ms ease,
+    color 200ms ease,
+    background 200ms ease,
+    border-color 200ms ease;
+}
+
+.sidebar-link:hover {
+  color: #e1ebfa;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(38, 91, 170, 0.13),
+      transparent
+    );
+
+  border-color: rgba(80, 135, 215, 0.12);
+
+  transform: translateX(3px);
+}
+
+.sidebar-link.active {
+  color: #edf5ff;
+
+  background:
+    linear-gradient(
+      100deg,
+      rgba(26, 82, 180, 0.24),
+      rgba(8, 24, 48, 0.38)
+    );
+
+  border-color: rgba(53, 133, 255, 0.45);
+
+  box-shadow:
+    inset 3px 0 #3b82f6,
+    0 10px 35px rgba(0, 80, 190, 0.09);
+}
+
+.sidebar-link svg {
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   SIDEBAR SPACER
+   ========================================================= */
+
+.sidebar-spacer {
+  flex: 1;
+
+  min-height: 40px;
+}
+
+
+/* =========================================================
+   MODEL STATUS
+   ========================================================= */
+
+.model-status-card {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  margin: 0 3px 15px;
+
+  padding: 14px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(6, 40, 35, 0.56),
+      rgba(4, 15, 17, 0.62)
+    );
+
+  border: 1px solid rgba(35, 180, 120, 0.18);
+
+  border-radius: 14px;
+
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.025);
+}
+
+.status-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #35dc8d;
+
+  background: rgba(19, 112, 77, 0.15);
+
+  border-radius: 10px;
+}
+
+.status-title {
+  color: #b8c7da;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.15em;
+}
+
+.status-text {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  margin-top: 5px;
+
+  color: #71869c;
+
+  font-size: 11px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+
+  display: inline-block;
+
+  flex-shrink: 0;
+
+  background: #22c55e;
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 10px rgba(34, 197, 94, 0.95);
+
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+
+
+/* =========================================================
+   SIDEBAR FOOTER
+   ========================================================= */
+
+.sidebar-footer {
+  padding: 3px 6px 0;
+
+  color: #344257;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.cardiotox-main {
+  position: relative;
+
+  min-height: 100vh;
+
+  margin-left: 276px;
+
+  z-index: 1;
+}
+
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+
+.cardiotox-navbar {
+  position: sticky;
+
+  top: 0;
+
+  height: 82px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 34px;
+
+  background:
+    rgba(2, 6, 12, 0.74);
+
+  border-bottom: 1px solid rgba(110, 145, 200, 0.13);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  z-index: 90;
+}
+
+.navbar-page {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  color: #647a97;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 0.17em;
+
+  text-transform: uppercase;
+}
+
+.navbar-page svg {
+  color: #3297ff;
+
+  filter:
+    drop-shadow(
+      0 0 8px rgba(50, 151, 255, 0.5)
+    );
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 27px;
+}
+
+.navbar-status {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  color: #72849c;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 0.14em;
+}
+
+.navbar-link {
+  color: #8998ad;
+
+  font-size: 13px;
+
+  text-decoration: none;
+
+  transition: color 160ms ease;
+}
+
+.navbar-link:hover {
+  color: white;
+}
+
+.navbar-menu {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #9db0c9;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(17, 31, 53, 0.78),
+      rgba(5, 12, 23, 0.85)
+    );
+
+  border: 1px solid rgba(100, 145, 210, 0.20);
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.navbar-menu:hover {
+  transform: translateY(-2px);
+
+  color: white;
+
+  border-color: rgba(65, 145, 255, 0.42);
+
+  background:
+    rgba(20, 45, 80, 0.75);
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.cardiotox-content {
+  position: relative;
+
+  min-height: calc(100vh - 82px);
+
+  z-index: 1;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .cardiotox-sidebar {
+    width: 220px;
+  }
+
+  .cardiotox-main {
+    margin-left: 220px;
+  }
+
+  .navbar-actions {
+    gap: 15px;
+  }
+
+  .navbar-status {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .cardiotox-sidebar {
+    display: none;
+  }
+
+  .cardiotox-main {
+    margin-left: 0;
+  }
+
+  .cardiotox-navbar {
+    padding: 0 18px;
+  }
+
+  .navbar-link {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

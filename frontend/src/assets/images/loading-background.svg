@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+
+<rect width="800"
+height="600"
+fill="#F8FAFC"/>
+
+<circle cx="400"
+cy="300"
+r="120"
+fill="none"
+stroke="#2563EB"
+stroke-width="10"
+stroke-dasharray="120">
+
+<animateTransform
+attributeName="transform"
+attributeType="XML"
+type="rotate"
+from="0 400 300"
+to="360 400 300"
+dur="2s"
+repeatCount="indefinite"/>
+
+</circle>
+
+<text x="250"
+y="500"
+font-size="30"
+font-family="Inter"
+fill="#0F172A">
+
+Loading Prediction...
+
+</text>
+
+</svg>

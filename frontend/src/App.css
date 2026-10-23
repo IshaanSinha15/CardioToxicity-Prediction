@@ -1,0 +1,1261 @@
+/* =========================================================
+   CARDIOTOX - SCIENTIFIC APPLICATION UI
+   ========================================================= */
+
+.research-page {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 42px 42px 70px;
+  color: #e8eef7;
+  background: #283c59;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.research-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+
+  border-bottom: 1px solid #1b2d44;
+}
+
+
+.research-kicker {
+  margin: 0 0 8px;
+
+  color: #f2f4f6;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: .14em;
+}
+
+
+.research-header h1,
+.research-results h2,
+.research-workflow h2 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: clamp(
+    30px,
+    3.2vw,
+    46px
+  );
+
+  line-height: 1.08;
+
+  letter-spacing: -.035em;
+}
+
+
+.research-header
+> div:first-child
+> p:last-child,
+
+.research-results-heading
+p:last-child {
+
+  max-width: 680px;
+
+  margin: 10px 0 0;
+
+  color: #8ca7c9;
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   MODEL STATUS
+   ========================================================= */
+
+.research-header-status {
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  min-width: 205px;
+
+  padding: 12px 14px;
+
+  border:
+    1px solid #1b2a3c;
+
+  border-radius: 10px;
+
+  background: #0b121c;
+}
+
+
+.research-header-status strong,
+.research-header-status small {
+  display: block;
+}
+
+
+.research-header-status strong {
+  font-size: 13px;
+  color: #dce5f1;
+}
+
+
+.research-header-status small {
+  margin-top: 3px;
+
+  color: #738398;
+
+  font-size: 11px;
+}
+
+
+.research-online-dot {
+
+  width: 7px;
+  height: 7px;
+
+  flex: 0 0 7px;
+
+  border-radius: 50%;
+
+  background: #4ade80;
+}
+
+
+/* =========================================================
+   INPUT / STRUCTURE GRID
+   ========================================================= */
+
+.research-workspace {
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, .95fr)
+    minmax(0, 1.05fr);
+
+  gap: 20px;
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.research-card,
+.research-results {
+
+  border:
+    1px solid #1a2939;
+
+  border-radius: 12px;
+
+  background: #0b131e;
+
+  box-shadow: none;
+}
+
+
+.research-card {
+  padding: 24px;
+}
+
+
+.research-card-heading {
+
+  display: flex;
+
+  gap: 13px;
+
+  align-items: flex-start;
+
+  margin-bottom: 26px;
+}
+
+
+.research-step {
+
+  display: grid;
+
+  place-items: center;
+
+  width: 30px;
+  height: 30px;
+
+  flex: 0 0 30px;
+
+  border:
+    1px solid #285486;
+
+  border-radius: 7px;
+
+  color: #75b4ff;
+
+  background: #0e1d2e;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+
+.research-card h2 {
+
+  margin: 1px 0 4px;
+
+  font-size: 18px;
+
+  letter-spacing: -.01em;
+}
+
+
+.research-card-heading p {
+
+  margin: 0;
+
+  color: #75859a;
+
+  font-size: 12px;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   LABELS
+   ========================================================= */
+
+.research-label {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  margin: 0 0 8px;
+
+  color: #b8c5d5;
+
+  font-size: 11px;
+
+  font-weight: 650;
+}
+
+
+.research-label span {
+  color: #65778e;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   SMILES INPUT
+   ========================================================= */
+
+.research-textarea,
+.research-dose-input {
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  color: #e6edf7;
+
+  background: #080f18;
+
+  border:
+    1px solid #223347;
+
+  border-radius: 8px;
+
+  outline: none;
+
+  transition:
+    border-color .15s ease;
+}
+
+
+.research-textarea {
+
+  min-height: 155px;
+
+  resize: vertical;
+
+  padding: 14px;
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+
+.research-textarea:focus,
+.research-dose-input:focus {
+
+  border-color: #3978b9;
+}
+
+
+.research-textarea::placeholder {
+  color: #4e6076;
+}
+
+
+/* =========================================================
+   EXAMPLE
+   ========================================================= */
+
+.research-example {
+
+  display: block;
+
+  margin: 9px 0 24px;
+
+  padding: 0;
+
+  border: 0;
+
+  color: #6daaf0;
+
+  background: transparent;
+
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+
+.research-example:hover {
+  color: #9acbff;
+}
+
+
+.research-example code {
+
+  font-family:
+    ui-monospace,
+    monospace;
+}
+
+
+/* =========================================================
+   DOSE
+   ========================================================= */
+
+.research-dose-row {
+
+  display: grid;
+
+  grid-template-columns:
+    125px
+    1fr;
+
+  align-items: center;
+
+  gap: 18px;
+}
+
+
+.research-dose-input {
+
+  padding: 11px 12px;
+
+  font-size: 14px;
+}
+
+
+.research-dose-range {
+
+  width: 100%;
+
+  accent-color: #3d87d4;
+}
+
+
+.research-range-labels {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  margin:
+    6px 0 24px 143px;
+
+  color: #53667d;
+
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.research-error {
+
+  display: flex;
+
+  gap: 8px;
+
+  align-items: center;
+
+  padding: 10px 12px;
+
+  border:
+    1px solid #5b3030;
+
+  border-radius: 7px;
+
+  color: #f0a6a6;
+
+  background: #211316;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.research-action-row {
+
+  display: flex;
+
+  gap: 9px;
+
+  margin-top: 20px;
+}
+
+
+.research-primary-button {
+
+  flex: 1;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 9px;
+
+  min-height: 44px;
+
+  border:
+    1px solid #3374b7;
+
+  border-radius: 8px;
+
+  color: #f4f8fd;
+
+  background: #2168aa;
+
+  font-size: 13px;
+
+  font-weight: 650;
+
+  cursor: pointer;
+}
+
+
+.research-primary-button:hover {
+  background: #2878bf;
+}
+
+
+.research-primary-button:disabled {
+
+  opacity: .65;
+
+  cursor: wait;
+}
+
+
+.research-reset-button {
+
+  width: 44px;
+
+  border:
+    1px solid #26384d;
+
+  border-radius: 8px;
+
+  color: #8da0b6;
+
+  background: #0a111a;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   MOLECULE VIEWER
+   ========================================================= */
+
+.research-molecule-empty,
+.research-molecule-fallback {
+
+  min-height: 300px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  padding: 20px;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid #1c2c3f;
+
+  border-radius: 9px;
+
+  color: #61748a;
+
+  background: #080f17;
+
+  text-align: center;
+}
+
+
+.research-molecule-empty svg {
+  color: #4c80ad;
+}
+
+
+.research-molecule-svg {
+
+  min-height: 300px;
+
+  display: grid;
+
+  place-items: center;
+
+  padding: 20px;
+
+  border:
+    1px solid #1c2c3f;
+
+  border-radius: 9px;
+
+  background: #080f17;
+
+  overflow: hidden;
+}
+
+
+.research-molecule-svg svg {
+
+  width: 100%;
+
+  max-width: 560px;
+
+  height: 280px;
+}
+
+
+.research-molecule-image {
+
+  display: block;
+
+  width: 100%;
+
+  min-height: 300px;
+
+  object-fit: contain;
+
+  padding: 20px;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid #1c2c3f;
+
+  border-radius: 9px;
+
+  background: #080f17;
+}
+
+
+.research-molecule-fallback span {
+
+  color: #6f849c;
+
+  font-size: 10px;
+
+  letter-spacing: .12em;
+}
+
+
+.research-molecule-fallback code {
+
+  color: #cbd7e5;
+
+  font-family:
+    ui-monospace,
+    monospace;
+
+  font-size: 13px;
+
+  word-break: break-all;
+}
+
+
+.research-molecule-fallback small {
+
+  color: #61748a;
+
+  max-width: 430px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   STRUCTURE META
+   ========================================================= */
+
+.research-structure-meta {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 14px;
+
+  margin-top: 12px;
+
+  padding-top: 12px;
+
+  border-top:
+    1px solid #182536;
+
+  color: #6d7e92;
+
+  font-size: 10px;
+}
+
+
+.research-structure-meta > span {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+}
+
+
+.research-structure-meta code {
+
+  max-width: 65%;
+
+  color: #a8b7c9;
+
+  font-family:
+    ui-monospace,
+    monospace;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   RESULTS
+   ========================================================= */
+
+.research-results {
+
+  margin-top: 20px;
+
+  padding: 25px;
+}
+
+
+.research-results-heading {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 24px;
+
+  margin-bottom: 20px;
+}
+
+
+.research-overall {
+
+  min-width: 135px;
+
+  padding: 12px 14px;
+
+  border:
+    1px solid #27384c;
+
+  border-radius: 9px;
+
+  background: #0a1119;
+}
+
+
+.research-overall small,
+.research-overall strong {
+
+  display: block;
+}
+
+
+.research-overall small {
+
+  color: #718398;
+
+  font-size: 10px;
+}
+
+
+.research-overall strong {
+
+  margin-top: 4px;
+
+  font-size: 18px;
+}
+
+
+.research-risk-high {
+  color: #f28b82;
+}
+
+
+.research-risk-moderate {
+  color: #e8b35b;
+}
+
+
+.research-risk-low {
+  color: #6fd18b;
+}
+
+
+.research-risk-no-signal,
+.research-risk-not-available {
+  color: #8999aa;
+}
+
+
+/* =========================================================
+   RESULT SUMMARY
+   ========================================================= */
+
+.research-summary-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  border:
+    1px solid #1a2939;
+
+  border-radius: 8px;
+
+  margin-bottom: 14px;
+
+  overflow: hidden;
+}
+
+
+.research-summary-item {
+
+  padding: 14px 16px;
+
+  border-right:
+    1px solid #1a2939;
+}
+
+
+.research-summary-item:last-child {
+  border-right: 0;
+}
+
+
+.research-summary-item span,
+.research-summary-item strong {
+
+  display: block;
+}
+
+
+.research-summary-item span {
+
+  color: #718297;
+
+  font-size: 10px;
+}
+
+
+.research-summary-item strong {
+
+  margin-top: 5px;
+
+  color: #dce5f1;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   CHANNEL CARDS
+   ========================================================= */
+
+.research-channel-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 12px;
+}
+
+
+.research-channel-card {
+
+  padding: 16px;
+
+  border:
+    1px solid #1b2b3c;
+
+  border-radius: 9px;
+
+  background: #0a1119;
+}
+
+
+.research-channel-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+
+.research-channel-header strong,
+.research-channel-header span {
+
+  display: block;
+}
+
+
+.research-channel-header strong {
+
+  color: #dce5f0;
+
+  font-size: 14px;
+}
+
+
+.research-channel-header
+div > span {
+
+  margin-top: 2px;
+
+  color: #65778e;
+
+  font-size: 10px;
+}
+
+
+.research-risk {
+
+  font-size: 10px;
+
+  font-weight: 650;
+}
+
+
+.research-channel-value {
+
+  display: flex;
+
+  align-items: baseline;
+
+  gap: 6px;
+
+  margin: 24px 0 12px;
+}
+
+
+.research-channel-value span {
+
+  color: #f0f4f8;
+
+  font-size: 25px;
+
+  font-weight: 600;
+
+  letter-spacing: -.02em;
+}
+
+
+.research-channel-value small {
+
+  color: #718398;
+
+  font-size: 10px;
+}
+
+
+.research-meter {
+
+  height: 4px;
+
+  overflow: hidden;
+
+  border-radius: 99px;
+
+  background: #172332;
+}
+
+
+.research-meter span {
+
+  display: block;
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: #4c8ac5;
+}
+
+
+.research-channel-footer {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-top: 8px;
+
+  color: #66798f;
+
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   NOTE
+   ========================================================= */
+
+.research-note {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 15px;
+
+  color: #718399;
+
+  font-size: 10px;
+}
+
+
+.research-note svg {
+  color: #5c94c7;
+}
+
+
+/* =========================================================
+   WORKFLOW
+   ========================================================= */
+
+.research-workflow {
+
+  margin-top: 42px;
+
+  padding-top: 30px;
+
+  border-top:
+    1px solid #182535;
+}
+
+
+.research-workflow-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 0;
+
+  margin-top: 22px;
+
+  border:
+    1px solid #1a2939;
+
+  border-radius: 9px;
+
+  overflow: hidden;
+}
+
+
+.research-workflow-grid > div {
+
+  min-height: 130px;
+
+  padding: 18px;
+
+  border-right:
+    1px solid #1a2939;
+
+  background: #0a1119;
+}
+
+
+.research-workflow-grid > div:last-child {
+  border-right: 0;
+}
+
+
+.research-workflow-grid strong {
+
+  display: block;
+
+  color: #5e91c0;
+
+  font-size: 10px;
+}
+
+
+.research-workflow-grid span {
+
+  display: block;
+
+  margin-top: 15px;
+
+  color: #dce5f1;
+
+  font-size: 16px;
+
+  font-weight: 600;
+}
+
+
+.research-workflow-grid p {
+
+  margin: 6px 0 0;
+
+  color: #718398;
+
+  font-size: 11px;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.research-footer-note {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  margin-top: 24px;
+
+  color: #56697f;
+
+  font-size: 10px;
+}
+
+
+.research-footer-note svg {
+  color: #4d91c8;
+}
+
+
+/* =========================================================
+   REDUCE OLD AI VISUAL EFFECTS
+   ========================================================= */
+
+.cardiotox-shell {
+
+  background: #070c13 !important;
+}
+
+
+.cardiotox-navbar {
+
+  background: #080e16 !important;
+
+  backdrop-filter: none !important;
+}
+
+
+.sidebar-link.active {
+
+  background: #10253b !important;
+
+  box-shadow:
+    inset 3px 0 #3d83c5 !important;
+}
+
+
+.brand-mark {
+
+  box-shadow: none !important;
+}
+
+
+.model-status-card {
+
+  background: #0a1515 !important;
+
+  box-shadow: none !important;
+}
+
+
+.navbar-page svg {
+  filter: none !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+  .research-page {
+
+    padding:
+      30px
+      24px
+      60px;
+  }
+
+
+  .research-workspace {
+
+    grid-template-columns:
+      1fr;
+  }
+
+}
+
+
+@media (max-width: 720px) {
+
+  .research-header {
+
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+
+  .research-header-status {
+    min-width: 0;
+  }
+
+
+  .research-summary-grid,
+  .research-channel-grid,
+  .research-workflow-grid {
+
+    grid-template-columns:
+      1fr;
+  }
+
+
+  .research-summary-item,
+  .research-workflow-grid > div {
+
+    border-right: 0;
+
+    border-bottom:
+      1px solid #1a2939;
+  }
+
+
+  .research-summary-item:last-child,
+  .research-workflow-grid > div:last-child {
+
+    border-bottom: 0;
+  }
+
+
+  .research-page {
+
+    padding:
+      24px
+      16px
+      50px;
+  }
+
+
+  .research-card,
+  .research-results {
+
+    padding: 18px;
+  }
+
+
+  .research-dose-row {
+
+    grid-template-columns:
+      100px
+      1fr;
+  }
+
+
+  .research-range-labels {
+
+    margin-left: 118px;
+  }
+
+}

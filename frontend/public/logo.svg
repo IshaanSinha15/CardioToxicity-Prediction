@@ -1,0 +1,46 @@
+<svg width="220" height="60" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2563EB"/>
+            <stop offset="100%" stop-color="#14B8A6"/>
+        </linearGradient>
+    </defs>
+
+    <!-- Molecule -->
+    <circle cx="24" cy="18" r="6" fill="url(#grad)"/>
+    <circle cx="40" cy="30" r="6" fill="url(#grad)"/>
+    <circle cx="24" cy="42" r="6" fill="url(#grad)"/>
+
+    <line x1="24" y1="18" x2="40" y2="30"
+          stroke="url(#grad)"
+          stroke-width="3"/>
+
+    <line x1="24" y1="42" x2="40" y2="30"
+          stroke="url(#grad)"
+          stroke-width="3"/>
+
+    <!-- ECG -->
+    <path
+        d="M52 30
+           L65 30
+           L70 20
+           L77 40
+           L84 15
+           L91 30
+           L100 30"
+        fill="none"
+        stroke="#F97316"
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+    <text
+        x="110"
+        y="36"
+        font-size="24"
+        font-family="Inter, Arial"
+        font-weight="700"
+        fill="#1E293B">
+        CardioTox AI
+    </text>
+</svg>

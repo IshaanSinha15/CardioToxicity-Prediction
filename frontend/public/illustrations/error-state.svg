@@ -1,0 +1,26 @@
+<!-- public/illustrations/error-state.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+
+<rect width="400" height="300" rx="20" fill="#FEF2F2"/>
+
+<polygon points="200,40 340,250 60,250"
+fill="#FCA5A5"/>
+
+<text x="188"
+y="185"
+font-size="90"
+font-family="Arial"
+font-weight="bold"
+fill="white">
+!
+</text>
+
+<text x="105"
+y="280"
+font-size="22"
+font-family="Inter"
+fill="#991B1B">
+Prediction Failed
+</text>
+
+</svg>

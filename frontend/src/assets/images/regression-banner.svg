@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320">
+
+<rect width="1200" height="320" rx="20" fill="#2563EB"/>
+
+<text x="80" y="110"
+font-size="48"
+fill="white"
+font-family="Inter"
+font-weight="700">
+
+ChemBERTa Regression
+
+</text>
+
+<text x="80"
+y="170"
+font-size="24"
+fill="#DBEAFE"
+font-family="Inter">
+
+Predict hERG, NaV1.5 and CaV1.2 IC50 values
+
+</text>
+
+<circle cx="1020" cy="90" r="18" fill="#14B8A6"/>
+<circle cx="1080" cy="140" r="18" fill="#14B8A6"/>
+<circle cx="1000" cy="210" r="18" fill="#14B8A6"/>
+
+<line x1="1020" y1="90" x2="1080" y2="140"
+stroke="white" stroke-width="4"/>
+
+<line x1="1080" y1="140" x2="1000" y2="210"
+stroke="white" stroke-width="4"/>
+
+</svg>
