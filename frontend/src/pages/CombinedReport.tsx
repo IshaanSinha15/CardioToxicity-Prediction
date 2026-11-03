@@ -36,7 +36,7 @@ export default function CombinedReport() {
       ) : (
         <>
           <section className="ct-report-intro">
-            <div><p className="ct-eyebrow">SUBMITTED MOLECULE</p><h2>{result.input.drug_name || "Untitled molecule"}</h2><code>{result.input.smiles}</code></div>
+            <div><p className="ct-eyebrow">SUBMITTED MOLECULE</p><code>{result.input.smiles}</code></div>
             <div className="ct-report-dose"><span>Concentration</span><strong>{result.input.concentration_nm ?? result.input.dose_nm ?? "--"}<small> nM</small></strong></div>
           </section>
 
@@ -51,8 +51,8 @@ export default function CombinedReport() {
           </section>
 
           <section className="ct-report-lower-grid">
-            <article className="ct-panel"><p className="ct-eyebrow">INTERPRETATION</p><h2>Evidence summary</h2><p className="ct-report-summary">{interpretation?.summary ?? "The available evidence is summarized across channel potency, block, simulation, classification and similarity."}</p>{interpretation?.details?.map((detail) => <p className="ct-report-detail" key={detail}>{detail}</p>)}<p className="ct-report-summary">ORD simulation: <strong>{result.simulation?.status ?? "not reported"}</strong>. Classification: <strong>{result.classification?.predicted_class ?? "not reported"}</strong>.</p></article>
-            <article className="ct-panel"><p className="ct-eyebrow">RELATED EVIDENCE</p><h2>Similarity & warnings</h2><p className="ct-report-summary">{result.similarity?.matches?.length ?? 0} reference compounds matched. {result.similarity?.label_summary?.high_risk_labels ?? 0} high-risk labels reported.</p>{result.warnings?.length ? result.warnings.map((warning) => <p className="ct-warning-row" key={warning}>{warning.replaceAll("_", " ")}</p>) : <p className="ct-report-detail">No pipeline warnings were returned.</p>}</article>
+            <article className="ct-panel"><p className="ct-eyebrow">INTERPRETATION</p><h2>Evidence summary</h2><p className="ct-report-summary">{interpretation?.summary ?? "The available evidence is summarized across channel potency, block, simulation, classification and similarity."}</p>{interpretation?.details?.map((detail) => <p className="ct-report-detail" key={detail}>{detail}</p>)}</article>
+            <article className="ct-panel"><p className="ct-eyebrow">RELATED EVIDENCE</p><h2>Similarity</h2><p className="ct-report-summary">{result.similarity?.matches?.length ?? 0} reference compounds matched. {result.similarity?.label_summary?.high_risk_labels ?? 0} high-risk labels reported.</p></article>
           </section>
           <section className="ct-panel ct-report-artifacts">
             <div className="ct-panel-heading"><div><p className="ct-eyebrow">GENERATED OUTPUTS</p><h2>Model artifacts</h2></div></div>
