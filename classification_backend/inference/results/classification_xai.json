@@ -1,140 +1,140 @@
 {
     "prediction": 2,
-    "confidence": 0.5489422451405274,
+    "confidence": 0.6422773716263511,
     "probabilities": [
-        0.11066842964044728,
-        0.5489422451405274,
-        0.3311141464888528,
-        0.009275178730172359
+        0.34933080363786023,
+        0.6422773716263511,
+        0.008367541263426344,
+        2.4283472362079472e-05
     ],
     "top_features": [
         {
             "feature": "APD90",
-            "importance": 0.10713177540416564,
-            "abs_importance": 0.10713177540416564
-        },
-        {
-            "feature": "IC50_ICaL",
-            "importance": 0.10571181004350765,
-            "abs_importance": 0.10571181004350765
+            "importance": 0.1720191596185621,
+            "abs_importance": 0.1720191596185621
         },
         {
             "feature": "APD50",
-            "importance": 0.08505740792357945,
-            "abs_importance": 0.08505740792357945
+            "importance": 0.11721545046921208,
+            "abs_importance": 0.11721545046921208
+        },
+        {
+            "feature": "RMP",
+            "importance": -0.08445350462640139,
+            "abs_importance": 0.08445350462640139
+        },
+        {
+            "feature": "IC50_ICaL",
+            "importance": 0.08314748692361096,
+            "abs_importance": 0.08314748692361096
         },
         {
             "feature": "IC50_INa",
-            "importance": 0.053436416234547555,
-            "abs_importance": 0.053436416234547555
-        },
-        {
-            "feature": "Block_IK1",
-            "importance": -0.034644440692275826,
-            "abs_importance": 0.034644440692275826
-        },
-        {
-            "feature": "Block_INa",
-            "importance": 0.025718669566542455,
-            "abs_importance": 0.025718669566542455
-        },
-        {
-            "feature": "APA",
-            "importance": 0.024722838865606653,
-            "abs_importance": 0.024722838865606653
-        },
-        {
-            "feature": "Peak",
-            "importance": 0.023052970572711162,
-            "abs_importance": 0.023052970572711162
-        },
-        {
-            "feature": "Block_IKs",
-            "importance": -0.022316004475476943,
-            "abs_importance": 0.022316004475476943
+            "importance": 0.04779810450101996,
+            "abs_importance": 0.04779810450101996
         },
         {
             "feature": "Triangulation",
-            "importance": -0.020660751196452182,
-            "abs_importance": 0.020660751196452182
+            "importance": -0.031274902971658844,
+            "abs_importance": 0.031274902971658844
+        },
+        {
+            "feature": "Peak",
+            "importance": 0.03052915606089245,
+            "abs_importance": 0.03052915606089245
+        },
+        {
+            "feature": "Block_ICaL",
+            "importance": 0.02941739958556013,
+            "abs_importance": 0.02941739958556013
+        },
+        {
+            "feature": "APA",
+            "importance": 0.02858961610562218,
+            "abs_importance": 0.02858961610562218
+        },
+        {
+            "feature": "Block_INa",
+            "importance": 0.020058111405507895,
+            "abs_importance": 0.020058111405507895
         }
     ],
     "classification_xai": {
         "prediction": 2,
-        "confidence": 0.5489422451405274,
+        "confidence": 0.6422773716263511,
         "top_features": [
             {
                 "feature": "APD90",
-                "importance": 0.10713177540416564,
-                "abs_importance": 0.10713177540416564
-            },
-            {
-                "feature": "IC50_ICaL",
-                "importance": 0.10571181004350765,
-                "abs_importance": 0.10571181004350765
+                "importance": 0.1720191596185621,
+                "abs_importance": 0.1720191596185621
             },
             {
                 "feature": "APD50",
-                "importance": 0.08505740792357945,
-                "abs_importance": 0.08505740792357945
+                "importance": 0.11721545046921208,
+                "abs_importance": 0.11721545046921208
+            },
+            {
+                "feature": "RMP",
+                "importance": -0.08445350462640139,
+                "abs_importance": 0.08445350462640139
+            },
+            {
+                "feature": "IC50_ICaL",
+                "importance": 0.08314748692361096,
+                "abs_importance": 0.08314748692361096
             },
             {
                 "feature": "IC50_INa",
-                "importance": 0.053436416234547555,
-                "abs_importance": 0.053436416234547555
-            },
-            {
-                "feature": "Block_IK1",
-                "importance": -0.034644440692275826,
-                "abs_importance": 0.034644440692275826
-            },
-            {
-                "feature": "Block_INa",
-                "importance": 0.025718669566542455,
-                "abs_importance": 0.025718669566542455
-            },
-            {
-                "feature": "APA",
-                "importance": 0.024722838865606653,
-                "abs_importance": 0.024722838865606653
-            },
-            {
-                "feature": "Peak",
-                "importance": 0.023052970572711162,
-                "abs_importance": 0.023052970572711162
-            },
-            {
-                "feature": "Block_IKs",
-                "importance": -0.022316004475476943,
-                "abs_importance": 0.022316004475476943
+                "importance": 0.04779810450101996,
+                "abs_importance": 0.04779810450101996
             },
             {
                 "feature": "Triangulation",
-                "importance": -0.020660751196452182,
-                "abs_importance": 0.020660751196452182
+                "importance": -0.031274902971658844,
+                "abs_importance": 0.031274902971658844
+            },
+            {
+                "feature": "Peak",
+                "importance": 0.03052915606089245,
+                "abs_importance": 0.03052915606089245
+            },
+            {
+                "feature": "Block_ICaL",
+                "importance": 0.02941739958556013,
+                "abs_importance": 0.02941739958556013
+            },
+            {
+                "feature": "APA",
+                "importance": 0.02858961610562218,
+                "abs_importance": 0.02858961610562218
+            },
+            {
+                "feature": "Block_INa",
+                "importance": 0.020058111405507895,
+                "abs_importance": 0.020058111405507895
             }
         ],
-        "message": "The compound was classified as High risk with 0.55 confidence. The most influential features were APD90, IC50_ICaL, APD50, IC50_INa, Block_IK1."
+        "message": "The compound was classified as High risk with 0.64 confidence. The most influential features were APD90, APD50, RMP, IC50_ICaL, IC50_INa."
     },
-    "bar_plot": "C:\\Users\\HP\\Desktop\\capstone_project\\classification_backend\\inference\\results\\bar_plot.png",
-    "waterfall_plot": "C:\\Users\\HP\\Desktop\\capstone_project\\classification_backend\\inference\\results\\waterfall_plot.png",
-    "report": "C:\\Users\\HP\\Desktop\\capstone_project\\classification_backend\\inference\\results\\xai_report.json",
+    "bar_plot": "C:\\Users\\HP\\Documents\\GitHub\\CardioToxicity-Prediction\\classification_backend\\inference\\results\\bar_plot.png",
+    "waterfall_plot": "C:\\Users\\HP\\Documents\\GitHub\\CardioToxicity-Prediction\\classification_backend\\inference\\results\\waterfall_plot.png",
+    "report": "C:\\Users\\HP\\Documents\\GitHub\\CardioToxicity-Prediction\\classification_backend\\inference\\results\\xai_report.json",
     "shap_values": [
-        -0.01886649490438208,
-        0.023052970572711162,
-        0.08505740792357945,
-        0.10713177540416564,
-        -0.020660751196452182,
-        0.024722838865606653,
-        -0.0011517637377634702,
-        0.025718669566542455,
-        -0.01599213386456519,
-        0.0020466031509577508,
-        -0.022316004475476943,
-        -0.034644440692275826,
-        -0.020542996784756726,
-        0.006105200821603577,
-        0.053436416234547555,
-        0.10571181004350765
+        -0.08445350462640139,
+        0.03052915606089245,
+        0.11721545046921208,
+        0.1720191596185621,
+        -0.031274902971658844,
+        0.02858961610562218,
+        -0.004490230102047574,
+        0.020058111405507895,
+        -0.0062880914539950395,
+        0.02941739958556013,
+        -0.004980785438202719,
+        -0.016755942161945356,
+        -0.004033229996981878,
+        0.015646435494617996,
+        0.04779810450101996,
+        0.08314748692361096
     ]
 }
